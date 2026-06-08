@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strive UR Intelligence Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f0f4f8;color:#1e293b;display:flex;height:100vh;overflow:hidden}
+/* Sidebar */
+#sidebar{width:220px;min-width:220px;background:#1a1f2e;color:#cbd5e1;display:flex;flex-direction:column;overflow-y:auto}
+#sidebar-brand{padding:20px 16px 12px;border-bottom:1px solid #2d3748}
+#sidebar-brand .logo{font-size:18px;font-weight:700;color:#fff}
+#sidebar-brand .sub{font-size:11px;color:#64748b;margin-top:2px}
+#sidebar nav{flex:1;padding:8px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:500;color:#94a3b8;transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{background:#252d3e;color:#e2e8f0}
+.nav-item.active{background:#252d3e;color:#2563eb;border-left-color:#2563eb}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+#sidebar-footer{padding:12px 16px;border-top:1px solid #2d3748;font-size:11px;color:#475569}
+/* Main */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 24px;display:flex;align-items:center;gap:12px;min-height:56px}
+#topbar h1{font-size:16px;font-weight:600;color:#1e293b;flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'Poppins',sans-serif}
+.btn-primary{background:#2563eb;color:#fff}.btn-primary:hover{background:#1d4ed8}
+.btn-success{background:#10b981;color:#fff}.btn-success:hover{background:#059669}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-secondary{background:#e2e8f0;color:#475569}.btn-secondary:hover{background:#cbd5e1}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-ghost{background:transparent;color:#64748b;border:1px solid #e2e8f0}.btn-ghost:hover{background:#f8fafc}
+#content{flex:1;overflow-y:auto;padding:24px}
+/* Cards */
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:20px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:#1e293b}
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.kpi-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center}
+.kpi-value{font-size:28px;font-weight:700;color:#2563eb}
+.kpi-label{font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:12px;color:#94a3b8;margin-top:2px}
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-approved{background:#d1fae5;color:#065f46}
+.badge-denied{background:#fee2e2;color:#991b1b}
+.badge-partial{background:#fff7ed;color:#9a3412}
+.badge-pending{background:#dbeafe;color:#1e40af}
+.badge-urgent{background:#fef2f2;color:#dc2626}
+.badge-high{background:#fff7ed;color:#ea580c}
+.badge-normal{background:#f0fdf4;color:#15803d}
+.badge-low{background:#f8fafc;color:#64748b}
+/* Tables */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8fafc;padding:9px 12px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:hover td{background:#f8fafc}
+/* Kanban */
+#kanban-board{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;min-height:calc(100vh - 180px)}
+.kanban-col{min-width:200px;background:#f8fafc;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.kanban-col-title{font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.5px;padding:4px 4px 8px;border-bottom:2px solid #e2e8f0;margin-bottom:4px}
+.kanban-col-count{background:#e2e8f0;color:#64748b;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:600;float:right}
+.kanban-card{background:#fff;border-radius:8px;padding:10px;box-shadow:0 1px 2px rgba(0,0,0,.06);cursor:pointer;border-left:3px solid #2563eb;font-size:12px}
+.kanban-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.kanban-card .pt-name{font-weight:600;font-size:13px;margin-bottom:4px}
+.kanban-card .pt-meta{color:#64748b;line-height:1.5}
+/* Modal */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+#modal-box{background:#fff;border-radius:12px;width:100%;max-width:780px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#modal-header{padding:18px 24px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between}
+#modal-title{font-size:16px;font-weight:600}
+#modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8;line-height:1}
+#modal-tabs{display:flex;gap:0;padding:0 24px;border-bottom:1px solid #e2e8f0}
+.modal-tab{padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;color:#64748b;border-bottom:2px solid transparent;transition:all .15s}
+.modal-tab.active{color:#2563eb;border-bottom-color:#2563eb}
+#modal-body{flex:1;overflow-y:auto;padding:20px 24px}
+#modal-footer{padding:14px 24px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px}
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:500;color:#475569}
+input,select,textarea{font-family:'Poppins',sans-serif;font-size:13px;padding:7px 10px;border:1px solid #d1d5db;border-radius:6px;width:100%;transition:border .15s;background:#fff;color:#1e293b}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+textarea{resize:vertical;min-height:70px}
+.section-heading{font-size:12px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.6px;margin:16px 0 10px;padding-bottom:4px;border-bottom:1px solid #dbeafe}
+/* Tasks */
+.task-item{display:flex;align-items:flex-start;gap:8px;padding:8px;background:#f8fafc;border-radius:6px;margin-bottom:6px;font-size:13px}
+.task-item input[type=checkbox]{width:16px;height:16px;margin-top:2px;cursor:pointer;accent-color:#2563eb}
+.task-item .task-done{text-decoration:line-through;color:#94a3b8}
+.task-meta{font-size:11px;color:#64748b;margin-top:2px}
+/* Date coloring */
+.due-overdue{color:#dc2626;font-weight:600}
+.due-today{color:#ea580c;font-weight:600}
+.due-soon{color:#d97706;font-weight:600}
+/* Setup overlay */
+#setup-overlay{position:fixed;inset:0;background:#1a1f2e;z-index:200;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;padding:40px}
+#setup-overlay h2{color:#fff;font-size:28px;font-weight:700;text-align:center}
+#setup-overlay p{color:#94a3b8;text-align:center;max-width:480px;line-height:1.6}
+.setup-cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.setup-card{background:#252d3e;border:2px solid #2d3748;border-radius:12px;padding:28px 32px;cursor:pointer;transition:all .2s;text-align:center;max-width:240px}
+.setup-card:hover{border-color:#2563eb;background:#1e2d4a}
+.setup-card .sc-icon{font-size:36px;margin-bottom:12px}
+.setup-card .sc-title{color:#e2e8f0;font-weight:600;font-size:15px;margin-bottom:6px}
+.setup-card .sc-desc{color:#64748b;font-size:12px;line-height:1.5}
+/* CSV import modal */
+#csv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
+#csv-box{background:#fff;border-radius:12px;width:100%;max-width:900px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.drop-zone{border:2px dashed #cbd5e1;border-radius:8px;padding:40px;text-align:center;color:#64748b;cursor:pointer;transition:all .15s}
+.drop-zone:hover,.drop-zone.dragover{border-color:#2563eb;background:#eff6ff}
+/* Expand patient rows */
+.pt-row{cursor:pointer;font-weight:600}
+.pt-row td{background:#f0f4f8}
+.pt-row:hover td{background:#e8edf5}
+.sub-row td{padding:6px 12px;font-size:12px}
+.sub-table{width:100%;border-collapse:collapse}
+.sub-table th{background:#f8fafc;padding:6px 10px;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase}
+.sub-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;font-size:12px}
+/* My queue banner */
+.queue-banner{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-radius:10px;padding:14px 20px;display:flex;gap:24px;margin-bottom:16px;align-items:center}
+.qb-stat{text-align:center}
+.qb-stat .qb-val{font-size:22px;font-weight:700}
+.qb-stat .qb-lbl{font-size:11px;opacity:.8}
+/* Responsive */
+@media(max-width:768px){
+  #sidebar{width:54px;min-width:54px}
+  .nav-item span{display:none}
+  #sidebar-brand .logo,#sidebar-brand .sub{display:none}
+  .form-grid{grid-template-columns:1fr}
+}
+.hidden{display:none!important}
+.text-muted{color:#94a3b8}
+.fw-bold{font-weight:700}
+.mt-2{margin-top:8px}
+.gap-2{gap:8px}
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.text-sm{font-size:12px}
+.chart-container{position:relative;height:260px}
+</style>
+</head>
+<body>
+
+<!-- Setup overlay -->
+<div id="setup-overlay" class="hidden">
+  <div style="text-align:center">
+    <div style="font-size:40px;margin-bottom:8px">🏥</div>
+    <h2>Strive UR Intelligence Tracker</h2>
+    <p style="color:#64748b;font-size:13px;margin-top:4px">Strive Recovery of Fort Wayne — Utilization Review</p>
+  </div>
+  <p>Welcome! Would you like to explore with demo data, or start fresh?</p>
+  <div class="setup-cards">
+    <div class="setup-card" onclick="setupChoice('fresh')">
+      <div class="sc-icon">🚀</div>
+      <div class="sc-title">Start Fresh</div>
+      <div class="sc-desc">Clear demo data and begin with a clean slate. Import your own Sunwave CSV data.</div>
+    </div>
+    <div class="setup-card" onclick="setupChoice('demo')">
+      <div class="sc-icon">🔍</div>
+      <div class="sc-title">Explore with Demo Data</div>
+      <div class="sc-desc">Keep 11 test patients to explore all features. Remove them anytime from Settings.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar">
+  <div id="sidebar-brand">
+    <div class="logo">⚕ Strive UR</div>
+    <div class="sub">Fort Wayne</div>
+  </div>
+  <nav>
+    <div class="nav-item active" data-view="dashboard" onclick="switchView(this)"><span class="icon">📊</span><span>Dashboard</span></div>
+    <div class="nav-item" data-view="queue" onclick="switchView(this)"><span class="icon">📋</span><span>My Queue</span></div>
+    <div class="nav-item" data-view="kanban" onclick="switchView(this)"><span class="icon">🗂️</span><span>Kanban</span></div>
+    <div class="nav-item" data-view="patients" onclick="switchView(this)"><span class="icon">👥</span><span>All Patients</span></div>
+    <div class="nav-item" data-view="denials" onclick="switchView(this)"><span class="icon">❌</span><span>Denials</span></div>
+    <div class="nav-item" data-view="appeals" onclick="switchView(this)"><span class="icon">⚖️</span><span>Appeals</span></div>
+    <div class="nav-item" data-view="writeoffs" onclick="switchView(this)"><span class="icon">💸</span><span>Write-Offs</span></div>
+    <div class="nav-item" data-view="performance" onclick="switchView(this)"><span class="icon">🏆</span><span>Staff Performance</span></div>
+    <div class="nav-item" data-view="settings" onclick="switchView(this)"><span class="icon">⚙️</span><span>Settings</span></div>
+  </nav>
+  <div id="sidebar-footer">v1.0 &copy; 2025</div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <h1 id="topbar-title">Dashboard</h1>
+    <button class="btn btn-secondary" onclick="openCsvModal()">⬆ Import Sunwave CSV</button>
+    <button class="btn btn-primary" onclick="openNewRecord()">+ New Record</button>
+  </div>
+  <div id="content"></div>
+</div>
+
+<!-- Record Modal -->
+<div id="modal-overlay" class="hidden">
+  <div id="modal-box">
+    <div id="modal-header">
+      <span id="modal-title">Auth Record</span>
+      <button id="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-tabs">
+      <div class="modal-tab active" data-tab="auth" onclick="switchTab(this)">Auth &amp; Clinical</div>
+      <div class="modal-tab" data-tab="workflow" onclick="switchTab(this)">Workflow &amp; Ownership</div>
+      <div class="modal-tab" data-tab="tasks" onclick="switchTab(this)">Task Log</div>
+    </div>
+    <div id="modal-body"></div>
+    <div id="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRecord()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- CSV Import Modal -->
+<div id="csv-overlay" class="hidden">
+  <div id="csv-box">
+    <div id="modal-header" style="padding:18px 24px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:16px;font-weight:600">Import Sunwave CSV</span>
+      <button onclick="closeCsvModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#94a3b8">×</button>
+    </div>
+    <div style="padding:20px 24px;overflow-y:auto;flex:1">
+      <div id="csv-drop-zone" class="drop-zone" onclick="document.getElementById('csv-file-input').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+        <div style="font-size:32px;margin-bottom:8px">📂</div>
+        <div style="font-weight:600;margin-bottom:4px">Drop CSV file here or click to browse</div>
+        <div style="font-size:12px;color:#94a3b8">Sunwave authorization export (.csv)</div>
+        <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
+      </div>
+      <div id="csv-preview"></div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:10px">
+      <button class="btn btn-secondary" onclick="closeCsvModal()">Cancel</button>
+      <button class="btn btn-primary hidden" id="csv-confirm-btn" onclick="confirmCsvImport()">Import Records</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA & STORAGE
+// ============================================================
+const STORAGE_KEY = 'strive_ur_v3';
+const SETUP_KEY = 'strive_ur_setup_done';
+
+const COORDINATORS = ['Meredith Dawson','John Delahoyde','Dusty Dawkins','Heather Reynolds','UR Director','Medical Director','Clinical Team','Billing','Payer','Administration'];
+const STAGES = [
+  'Waiting on Clinical Notes','Ready to Submit',
+  'PA Submitted - Awaiting Decision','Approved - Active','Concurrent Review Due','Concurrent Review Submitted',
+  'Denied - P2P Needed','P2P Scheduled','P2P Completed - Appeal Decision Pending','Appeal Filed - Level 1','Appeal Filed - Level 2','External Review Requested','Appeal Overturned','Appeal Upheld',
+  'Closed - Discharged','Closed - AMA','Closed - Written Off'
+];
+const DENIAL_REASONS = [
+  'Medical Necessity - Not Met','Late Submission','Wrong Procedure Code','Missing Documentation',
+  'No Authorization on File','Timely Filing Exceeded','Duplicate Claim','Coordination of Benefits',
+  'Level of Care Not Supported','Experimental/Investigational','Out of Network','Other Administrative'
+];
+const LOC_OPTIONS = ['Detox (3.7)','Residential (3.5)','PHP (2.5)','IOP (2.1)','OP (1.0)','MAT','Transitional Housing'];
+const PAYERS = ['Anthem BCBS Indiana','CareSource Indiana','MDwise','MHS Indiana','Indiana Medicaid','UnitedHealthcare Community Plan','Aetna Commercial','Medicare Advantage'];
+
+function loadData(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch(e){ return []; }
+}
+function saveData(records){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+function genId(){
+  return 'sw-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+}
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+function generateDemoData(){
+  const now = new Date();
+  const d = (offset=0) => {
+    const dt = new Date(now); dt.setDate(dt.getDate()+offset);
+    return dt.toISOString().slice(0,10);
+  };
+  const records = [];
+  const push = (r) => records.push({tasks:[],isTest:true,createdAt:now.toISOString(),updatedAt:now.toISOString(),...r});
+
+  // Patient 1: Clean approval chain
+  push({id:'sw-P001-001',mri:'MRI-10001',patientLastName:'Johnson',patientFirstName:'TEST-Alice',admissionDate:d(-60),insuranceProvider:'Anthem BCBS Indiana',insuranceType:'Commercial',authorizedLevelOfCare:'Detox (3.7)',authCode:'ATH-10001',authStart:d(-60),authEnd:d(-54),daysAuthorized:7,daysRequested:7,paSubmissionDate:d(-61),dateAuthReceived:d(-60),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'Meredith Dawson',currentOwner:'Meredith Dawson',department:'UR',currentStage:'Approved - Active',priority:'Normal',handoffNotes:'Initial detox approval.'});
+  push({id:'sw-P001-002',mri:'MRI-10001',patientLastName:'Johnson',patientFirstName:'TEST-Alice',admissionDate:d(-60),insuranceProvider:'Anthem BCBS Indiana',insuranceType:'Commercial',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-10002',authStart:d(-54),authEnd:d(-40),daysAuthorized:14,daysRequested:14,paSubmissionDate:d(-55),dateAuthReceived:d(-53),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:d(-40),dischargeType:'Graduated',urReviewer:'Meredith Dawson',currentOwner:'Meredith Dawson',department:'UR',currentStage:'Closed - Discharged',priority:'Normal',handoffNotes:'Step down to residential.'});
+
+  // Patient 2: Denial -> P2P overturn
+  push({id:'sw-P002-001',mri:'MRI-10002',patientLastName:'Martinez',patientFirstName:'TEST-Carlos',admissionDate:d(-30),insuranceProvider:'CareSource Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-20001',authStart:d(-30),authEnd:d(-23),daysAuthorized:0,daysRequested:7,paSubmissionDate:d(-31),dateAuthReceived:'',decision:'Denied',denialReason:'Medical Necessity - Not Met',denialSubcategory:'Acuity',avoidable:'Not Avoidable',appealFiled:'P2P',appealOutcome:'Overturned',dischargeDate:'',dischargeType:'',urReviewer:'John Delahoyde',currentOwner:'John Delahoyde',department:'UR',currentStage:'Appeal Overturned',priority:'High',handoffNotes:'P2P completed with Dr. Smith. Overturned.',tasks:[{id:'t1',description:'Schedule P2P call with CareSource',assignedTo:'John Delahoyde',dueDate:d(-25),priority:'High',done:true,doneAt:d(-26)}]});
+  push({id:'sw-P002-002',mri:'MRI-10002',patientLastName:'Martinez',patientFirstName:'TEST-Carlos',admissionDate:d(-30),insuranceProvider:'CareSource Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-20002',authStart:d(-23),authEnd:d(-16),daysAuthorized:7,daysRequested:7,paSubmissionDate:d(-24),dateAuthReceived:d(-22),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'John Delahoyde',currentOwner:'John Delahoyde',department:'UR',currentStage:'Concurrent Review Due',priority:'Normal',handoffNotes:'After overturn, new auth issued.',tasks:[{id:'t2',description:'Submit concurrent review before '+d(-14),assignedTo:'John Delahoyde',dueDate:d(-14),priority:'High',done:false}]});
+
+  // Patient 3: Active with overdue task
+  push({id:'sw-P003-001',mri:'MRI-10003',patientLastName:'Williams',patientFirstName:'TEST-Diana',admissionDate:d(-20),insuranceProvider:'MDwise',insuranceType:'Medicaid',authorizedLevelOfCare:'PHP (2.5)',authCode:'ATH-30001',authStart:d(-20),authEnd:d(3),daysAuthorized:23,daysRequested:23,paSubmissionDate:d(-21),dateAuthReceived:d(-19),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'Dusty Dawkins',currentOwner:'Dusty Dawkins',department:'UR',currentStage:'Concurrent Review Due',priority:'Urgent',handoffNotes:'',tasks:[{id:'t3',description:'Submit concurrent review - OVERDUE',assignedTo:'Dusty Dawkins',dueDate:d(-2),priority:'Urgent',done:false}]});
+
+  // Patient 4: Denial upheld -> write-off
+  push({id:'sw-P004-001',mri:'MRI-10004',patientLastName:'Thompson',patientFirstName:'TEST-Eric',admissionDate:d(-45),insuranceProvider:'MHS Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-40001',authStart:d(-45),authEnd:d(-38),daysAuthorized:0,daysRequested:7,paSubmissionDate:d(-46),dateAuthReceived:'',decision:'Denied',denialReason:'Late Submission',denialSubcategory:'',avoidable:'Avoidable',appealFiled:'Level 1',appealOutcome:'Upheld',dischargeDate:d(-35),dischargeType:'AMA',urReviewer:'Heather Reynolds',currentOwner:'Billing',department:'Billing',currentStage:'Closed - Written Off',priority:'Low',handoffNotes:'Write-off. Late submission was our error.',tasks:[]});
+
+  // Patient 5: Pending decision
+  push({id:'sw-P005-001',mri:'MRI-10005',patientLastName:'Garcia',patientFirstName:'TEST-Fatima',admissionDate:d(-8),insuranceProvider:'Indiana Medicaid',insuranceType:'Medicaid',authorizedLevelOfCare:'Detox (3.7)',authCode:'ATH-50001',authStart:d(-8),authEnd:d(0),daysAuthorized:0,daysRequested:7,paSubmissionDate:d(-9),dateAuthReceived:'',decision:'Pending',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'Meredith Dawson',currentOwner:'Payer',department:'UR',currentStage:'PA Submitted - Awaiting Decision',priority:'High',handoffNotes:'Called payer twice. Still awaiting.',tasks:[{id:'t4',description:'Follow up with Indiana Medicaid on pending auth',assignedTo:'Meredith Dawson',dueDate:d(1),priority:'High',done:false}]});
+
+  // Patient 6: Appeal level 2 pending
+  push({id:'sw-P006-001',mri:'MRI-10006',patientLastName:'Robinson',patientFirstName:'TEST-George',admissionDate:d(-55),insuranceProvider:'UnitedHealthcare Community Plan',insuranceType:'Medicaid',authorizedLevelOfCare:'IOP (2.1)',authCode:'ATH-60001',authStart:d(-55),authEnd:d(-48),daysAuthorized:0,daysRequested:7,paSubmissionDate:d(-56),dateAuthReceived:'',decision:'Denied',denialReason:'Level of Care Not Supported',denialSubcategory:'',avoidable:'Under Review',appealFiled:'Level 2',appealOutcome:'Pending',dischargeDate:'',dischargeType:'',urReviewer:'John Delahoyde',currentOwner:'UR Director',department:'UR',currentStage:'Appeal Filed - Level 2',priority:'High',handoffNotes:'Level 1 upheld. Filing level 2 external review.',tasks:[{id:'t5',description:'File external review with MAXIMUS',assignedTo:'UR Director',dueDate:d(2),priority:'High',done:false}]});
+
+  // Patient 7: Partial approval
+  push({id:'sw-P007-001',mri:'MRI-10007',patientLastName:'Lee',patientFirstName:'TEST-Hannah',admissionDate:d(-15),insuranceProvider:'Aetna Commercial',insuranceType:'Commercial',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-70001',authStart:d(-15),authEnd:d(-8),daysAuthorized:5,daysRequested:10,paSubmissionDate:d(-16),dateAuthReceived:d(-14),decision:'Partial',denialReason:'Medical Necessity - Not Met',denialSubcategory:'Partial days only',avoidable:'Not Avoidable',appealFiled:'P2P',appealOutcome:'Pending',dischargeDate:'',dischargeType:'',urReviewer:'Dusty Dawkins',currentOwner:'Medical Director',department:'UR',currentStage:'P2P Scheduled',priority:'Urgent',handoffNotes:'Partial: 5 of 10 days. P2P scheduled tomorrow.',tasks:[{id:'t6',description:'Prepare clinical notes for P2P call',assignedTo:'Clinical Team',dueDate:d(0),priority:'Urgent',done:false}]});
+
+  // Patient 8: Clean discharge
+  push({id:'sw-P008-001',mri:'MRI-10008',patientLastName:'Brown',patientFirstName:'TEST-Ivan',admissionDate:d(-40),insuranceProvider:'Medicare Advantage',insuranceType:'Medicare',authorizedLevelOfCare:'Detox (3.7)',authCode:'ATH-80001',authStart:d(-40),authEnd:d(-33),daysAuthorized:7,daysRequested:7,paSubmissionDate:d(-41),dateAuthReceived:d(-40),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'Heather Reynolds',currentOwner:'Heather Reynolds',department:'UR',currentStage:'Concurrent Review Due',priority:'Normal',handoffNotes:'',tasks:[{id:'t7',description:'Submit concurrent review for residential step',assignedTo:'Heather Reynolds',dueDate:d(-31),priority:'Normal',done:true,doneAt:d(-32)}]});
+  push({id:'sw-P008-002',mri:'MRI-10008',patientLastName:'Brown',patientFirstName:'TEST-Ivan',admissionDate:d(-40),insuranceProvider:'Medicare Advantage',insuranceType:'Medicare',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-80002',authStart:d(-33),authEnd:d(-19),daysAuthorized:14,daysRequested:14,paSubmissionDate:d(-34),dateAuthReceived:d(-32),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:d(-19),dischargeType:'Graduated',urReviewer:'Heather Reynolds',currentOwner:'Heather Reynolds',department:'UR',currentStage:'Closed - Discharged',priority:'Normal',handoffNotes:'Successful discharge.'});
+
+  // Patient 9: Missing docs denial
+  push({id:'sw-P009-001',mri:'MRI-10009',patientLastName:'Davis',patientFirstName:'TEST-Julia',admissionDate:d(-12),insuranceProvider:'Anthem BCBS Indiana',insuranceType:'Commercial',authorizedLevelOfCare:'PHP (2.5)',authCode:'ATH-90001',authStart:d(-12),authEnd:d(-5),daysAuthorized:0,daysRequested:7,paSubmissionDate:d(-13),dateAuthReceived:'',decision:'Denied',denialReason:'Missing Documentation',denialSubcategory:'ASAM criteria absent',avoidable:'Avoidable',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'Meredith Dawson',currentOwner:'Clinical Team',department:'Clinical',currentStage:'Denied - P2P Needed',priority:'Urgent',handoffNotes:'Need ASAM from clinician ASAP.',tasks:[{id:'t8',description:'Obtain complete ASAM from clinician',assignedTo:'Clinical Team',dueDate:d(0),priority:'Urgent',done:false}]});
+
+  // Patient 10: Long-stay residential
+  push({id:'sw-P010-001',mri:'MRI-10010',patientLastName:'Wilson',patientFirstName:'TEST-Kevin',admissionDate:d(-70),insuranceProvider:'CareSource Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-A0001',authStart:d(-70),authEnd:d(-63),daysAuthorized:7,daysRequested:7,paSubmissionDate:d(-71),dateAuthReceived:d(-70),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'John Delahoyde',currentOwner:'John Delahoyde',department:'UR',currentStage:'Approved - Active',priority:'Normal',handoffNotes:'Initial residential.'});
+  push({id:'sw-P010-002',mri:'MRI-10010',patientLastName:'Wilson',patientFirstName:'TEST-Kevin',admissionDate:d(-70),insuranceProvider:'CareSource Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-A0002',authStart:d(-63),authEnd:d(-56),daysAuthorized:7,daysRequested:7,paSubmissionDate:d(-64),dateAuthReceived:d(-62),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'John Delahoyde',currentOwner:'John Delahoyde',department:'UR',currentStage:'Concurrent Review Due',priority:'Normal',handoffNotes:'Concurrent 1.'});
+  push({id:'sw-P010-003',mri:'MRI-10010',patientLastName:'Wilson',patientFirstName:'TEST-Kevin',admissionDate:d(-70),insuranceProvider:'CareSource Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Residential (3.5)',authCode:'ATH-A0003',authStart:d(-56),authEnd:d(-49),daysAuthorized:7,daysRequested:7,paSubmissionDate:d(-57),dateAuthReceived:d(-55),decision:'Approved',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'John Delahoyde',currentOwner:'John Delahoyde',department:'UR',currentStage:'Concurrent Review Due',priority:'Normal',handoffNotes:'Concurrent 2.',tasks:[{id:'t9',description:'Submit concurrent review 3',assignedTo:'John Delahoyde',dueDate:d(-2),priority:'Normal',done:false}]});
+
+  // Patient 11: New intake today
+  push({id:'sw-P011-001',mri:'MRI-10011',patientLastName:'Anderson',patientFirstName:'TEST-Laura',admissionDate:d(0),insuranceProvider:'MHS Indiana',insuranceType:'Medicaid',authorizedLevelOfCare:'Detox (3.7)',authCode:'',authStart:d(0),authEnd:'',daysAuthorized:0,daysRequested:7,paSubmissionDate:'',dateAuthReceived:'',decision:'Pending',denialReason:'',denialSubcategory:'',avoidable:'',appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',urReviewer:'Dusty Dawkins',currentOwner:'Dusty Dawkins',department:'UR',currentStage:'Waiting on Clinical Notes',priority:'Urgent',handoffNotes:'New admit. Waiting on clinical notes for PA.',tasks:[{id:'t10',description:'Obtain clinical notes from nursing',assignedTo:'Clinical Team',dueDate:d(0),priority:'Urgent',done:false},{id:'t11',description:'Submit initial PA to MHS Indiana',assignedTo:'Dusty Dawkins',dueDate:d(1),priority:'Urgent',done:false}]});
+
+  return records;
+}
+
+// ============================================================
+// APP STATE
+// ============================================================
+let currentView = 'dashboard';
+let currentRecord = null; // record being edited
+let currentTab = 'auth';
+let csvParsed = [];
+let queueCoordinator = '';
+let expandedPatients = new Set();
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function(){
+  if(!localStorage.getItem(SETUP_KEY)){
+    document.getElementById('setup-overlay').classList.remove('hidden');
+  } else {
+    initApp();
+  }
+};
+
+function setupChoice(choice){
+  document.getElementById('setup-overlay').classList.add('hidden');
+  if(choice === 'demo'){
+    const existing = loadData();
+    if(existing.length === 0){
+      saveData(generateDemoData());
+    }
+  } else {
+    saveData([]);
+  }
+  localStorage.setItem(SETUP_KEY,'1');
+  initApp();
+}
+
+function initApp(){
+  renderView(currentView);
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function switchView(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  currentView = el.dataset.view;
+  const titles = {dashboard:'Dashboard',queue:'My Queue',kanban:'Kanban Board',patients:'All Patients',denials:'Denials',appeals:'Appeals',writeoffs:'Write-Offs',performance:'Staff Performance',settings:'Settings'};
+  document.getElementById('topbar-title').textContent = titles[currentView]||currentView;
+  renderView(currentView);
+}
+
+function renderView(view){
+  const c = document.getElementById('content');
+  switch(view){
+    case 'dashboard': renderDashboard(c); break;
+    case 'queue': renderQueue(c); break;
+    case 'kanban': renderKanban(c); break;
+    case 'patients': renderPatients(c); break;
+    case 'denials': renderDenials(c); break;
+    case 'appeals': renderAppeals(c); break;
+    case 'writeoffs': renderWriteoffs(c); break;
+    case 'performance': renderPerformance(c); break;
+    case 'settings': renderSettings(c); break;
+  }
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard(c){
+  const records = loadData();
+  const total = records.length;
+  const approved = records.filter(r=>r.decision==='Approved').length;
+  const denied = records.filter(r=>r.decision==='Denied').length;
+  const partial = records.filter(r=>r.decision==='Partial').length;
+  const pending = records.filter(r=>r.decision==='Pending').length;
+  const denialRate = total? Math.round(denied/total*100):0;
+  const approvalRate = total? Math.round(approved/total*100):0;
+
+  const appeals = records.filter(r=>r.appealFiled&&r.appealFiled!=='');
+  const overturned = appeals.filter(r=>r.appealOutcome==='Overturned').length;
+  const appealOverturnRate = appeals.length? Math.round(overturned/appeals.length*100):0;
+
+  const deniedWithDays = records.filter(r=>r.decision==='Denied'&&r.dateAuthReceived&&r.paSubmissionDate);
+  const avgDaysToAuth = deniedWithDays.length? Math.round(deniedWithDays.reduce((s,r)=>{
+    return s + daysBetween(r.paSubmissionDate,r.dateAuthReceived||r.authEnd);
+  },0)/deniedWithDays.length) : 0;
+
+  const avoidable = records.filter(r=>r.avoidable==='Avoidable').length;
+
+  // Denial by reason
+  const reasonMap = {};
+  records.filter(r=>r.decision==='Denied'&&r.denialReason).forEach(r=>{
+    reasonMap[r.denialReason]=(reasonMap[r.denialReason]||0)+1;
+  });
+
+  // Payer denial rates
+  const payerMap = {};
+  records.forEach(r=>{
+    if(!r.insuranceProvider) return;
+    if(!payerMap[r.insuranceProvider]) payerMap[r.insuranceProvider]={total:0,denied:0};
+    payerMap[r.insuranceProvider].total++;
+    if(r.decision==='Denied') payerMap[r.insuranceProvider].denied++;
+  });
+
+  c.innerHTML = `
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-value">${total}</div><div class="kpi-label">Total Auth Periods</div></div>
+    <div class="kpi-card"><div class="kpi-value" style="color:#10b981">${approvalRate}%</div><div class="kpi-label">Approval Rate</div><div class="kpi-sub">${approved} approved</div></div>
+    <div class="kpi-card"><div class="kpi-value" style="color:#ef4444">${denialRate}%</div><div class="kpi-label">Denial Rate</div><div class="kpi-sub">${denied} denied</div></div>
+    <div class="kpi-card"><div class="kpi-value" style="color:#f59e0b">${pending}</div><div class="kpi-label">Pending</div></div>
+    <div class="kpi-card"><div class="kpi-value" style="color:#8b5cf6">${appealOverturnRate}%</div><div class="kpi-label">Appeal Overturn Rate</div><div class="kpi-sub">${overturned}/${appeals.length} appeals</div></div>
+    <div class="kpi-card"><div class="kpi-value" style="color:#ef4444">${avoidable}</div><div class="kpi-label">Avoidable Denials</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Denial Reasons</span></div>
+      <div class="chart-container"><canvas id="denial-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Payer Denial Rates</span></div>
+      <div class="chart-container"><canvas id="payer-chart"></canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-header"><span class="card-title">Recent Activity</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Patient</th><th>Payer</th><th>LOC</th><th>Auth Code</th><th>Decision</th><th>Stage</th><th>Owner</th><th>Action</th></tr></thead>
+        <tbody>
+          ${records.slice(-10).reverse().map(r=>`<tr>
+            <td><b>${r.patientLastName}, ${r.patientFirstName}</b><br><span class="text-muted text-sm">${r.mri}</span></td>
+            <td>${r.insuranceProvider||'-'}</td><td>${r.authorizedLevelOfCare||'-'}</td>
+            <td>${r.authCode||'-'}</td>
+            <td>${decisionBadge(r.decision)}</td>
+            <td style="font-size:11px">${r.currentStage||'-'}</td>
+            <td style="font-size:11px">${r.currentOwner||'-'}</td>
+            <td><button class="btn btn-ghost btn-sm" onclick="openEditRecord('${r.id}')">Edit</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  // Charts
+  setTimeout(()=>{
+    const rLabels = Object.keys(reasonMap);
+    const rData = Object.values(reasonMap);
+    if(rLabels.length){
+      new Chart(document.getElementById('denial-chart'),{type:'bar',data:{labels:rLabels.map(l=>l.length>20?l.slice(0,20)+'…':l),datasets:[{label:'Count',data:rData,backgroundColor:'#ef4444',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+    }
+    const pLabels = Object.keys(payerMap);
+    const pData = pLabels.map(p=>payerMap[p].total?Math.round(payerMap[p].denied/payerMap[p].total*100):0);
+    if(pLabels.length){
+      new Chart(document.getElementById('payer-chart'),{type:'bar',data:{labels:pLabels.map(l=>l.length>18?l.slice(0,18)+'…':l),datasets:[{label:'Denial Rate %',data:pData,backgroundColor:'#2563eb',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10}}},y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+    }
+  },50);
+}
+
+// ============================================================
+// MY QUEUE
+// ============================================================
+function renderQueue(c){
+  const records = loadData();
+  const coordinators = [...new Set(records.map(r=>r.currentOwner).filter(Boolean))].filter(x=>COORDINATORS.slice(0,4).includes(x));
+  if(!queueCoordinator && coordinators.length) queueCoordinator = coordinators[0];
+
+  const myRecords = records.filter(r=>r.currentOwner===queueCoordinator&&r.tasks&&r.tasks.some(t=>!t.done));
+  const overdue = myRecords.filter(r=>r.tasks.some(t=>!t.done&&isOverdue(t.dueDate)));
+  const today = myRecords.filter(r=>r.tasks.some(t=>!t.done&&isDueToday(t.dueDate)));
+  const upcoming = myRecords.filter(r=>r.tasks.some(t=>!t.done&&isDueSoon(t.dueDate)&&!isDueToday(t.dueDate)&&!isOverdue(t.dueDate)));
+
+  c.innerHTML = `
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <label style="font-weight:600">Coordinator:</label>
+    <select onchange="queueCoordinator=this.value;renderView('queue')" style="width:220px">
+      ${COORDINATORS.slice(0,4).map(n=>`<option value="${n}" ${n===queueCoordinator?'selected':''}>${n}</option>`).join('')}
+    </select>
+  </div>
+  <div class="queue-banner">
+    <div class="qb-stat"><div class="qb-val">${myRecords.length}</div><div class="qb-lbl">Open Cases</div></div>
+    <div class="qb-stat"><div class="qb-val" style="color:#fca5a5">${overdue.length}</div><div class="qb-lbl">Overdue</div></div>
+    <div class="qb-stat"><div class="qb-val" style="color:#fde68a">${today.length}</div><div class="qb-lbl">Due Today</div></div>
+    <div class="qb-stat"><div class="qb-val">${upcoming.length}</div><div class="qb-lbl">Upcoming</div></div>
+  </div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Patient</th><th>Payer</th><th>LOC</th><th>Decision</th><th>Stage</th><th>Priority</th><th>Next Task</th><th>Due</th><th>Action</th></tr></thead>
+        <tbody>
+          ${myRecords.length===0?'<tr><td colspan="9" style="text-align:center;color:#94a3b8;padding:32px">No open tasks</td></tr>':''}
+          ${myRecords.map(r=>{
+            const nextTask = r.tasks.find(t=>!t.done);
+            const due = nextTask?.dueDate||'';
+            const dueCls = isOverdue(due)?'due-overdue':isDueToday(due)?'due-today':isDueSoon(due)?'due-soon':'';
+            return `<tr>
+              <td><b>${r.patientLastName}, ${r.patientFirstName}</b><br><span class="text-muted text-sm">${r.mri}</span></td>
+              <td style="font-size:12px">${r.insuranceProvider||'-'}</td>
+              <td>${r.authorizedLevelOfCare||'-'}</td>
+              <td>${decisionBadge(r.decision)}</td>
+              <td style="font-size:11px">${r.currentStage||'-'}</td>
+              <td>${priorityBadge(r.priority)}</td>
+              <td style="font-size:12px">${nextTask?nextTask.description:'-'}</td>
+              <td class="${dueCls}" style="font-size:12px">${due||'-'}</td>
+              <td><button class="btn btn-primary btn-sm" onclick="openEditRecord('${r.id}')">Open</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// KANBAN
+// ============================================================
+const KANBAN_STAGES = [
+  {key:'waiting',label:'Waiting on Clinical',stages:['Waiting on Clinical Notes']},
+  {key:'ready',label:'Ready to Submit',stages:['Ready to Submit']},
+  {key:'awaiting',label:'Awaiting Decision',stages:['PA Submitted - Awaiting Decision']},
+  {key:'active',label:'Approved-Active',stages:['Approved - Active','Concurrent Review Submitted']},
+  {key:'concurrent',label:'Concurrent Due',stages:['Concurrent Review Due']},
+  {key:'denied',label:'Denied-P2P',stages:['Denied - P2P Needed','P2P Scheduled','P2P Completed - Appeal Decision Pending']},
+  {key:'appeal',label:'Appeal',stages:['Appeal Filed - Level 1','Appeal Filed - Level 2','External Review Requested','Appeal Overturned','Appeal Upheld']},
+  {key:'closed',label:'Closed',stages:['Closed - Discharged','Closed - AMA','Closed - Written Off']}
+];
+
+function renderKanban(c){
+  const records = loadData();
+  c.style.padding = '16px';
+  c.innerHTML = `<div id="kanban-board">${KANBAN_STAGES.map(col=>{
+    const cards = records.filter(r=>col.stages.includes(r.currentStage));
+    return `<div class="kanban-col">
+      <div class="kanban-col-title">${col.label}<span class="kanban-col-count">${cards.length}</span></div>
+      ${cards.map(r=>{
+        const nextTask = r.tasks&&r.tasks.find(t=>!t.done);
+        const due = nextTask?.dueDate||r.authEnd||'';
+        const dueCls = isOverdue(due)?'due-overdue':isDueToday(due)?'due-today':isDueSoon(due)?'due-soon':'';
+        return `<div class="kanban-card" onclick="openEditRecord('${r.id}')">
+          <div class="pt-name">${r.patientLastName}, ${r.patientFirstName.replace('TEST-','')}</div>
+          <div class="pt-meta">${r.insuranceProvider||'-'}<br>${r.authorizedLevelOfCare||'-'} &nbsp;${decisionBadge(r.decision)}</div>
+          ${nextTask?`<div style="margin-top:6px;font-size:11px;color:#1e293b">📌 ${nextTask.description}</div>`:''}
+          <div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;color:#64748b">${r.currentOwner||''}</span>
+            ${due?`<span class="text-sm ${dueCls}">${due}</span>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ============================================================
+// ALL PATIENTS
+// ============================================================
+function renderPatients(c){
+  const records = loadData();
+  // Group by MRI
+  const groups = {};
+  records.forEach(r=>{
+    if(!groups[r.mri]) groups[r.mri]={mri:r.mri,lastName:r.patientLastName,firstName:r.patientFirstName,records:[]};
+    groups[r.mri].records.push(r);
+  });
+  const pts = Object.values(groups).sort((a,b)=>(a.lastName||'').localeCompare(b.lastName||''));
+
+  c.innerHTML = `
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">All Patients (${pts.length})</span>
+      <button class="btn btn-primary" onclick="openNewRecord()">+ New Record</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Patient</th><th>MRI</th><th>Auth Periods</th><th>Last Payer</th><th>Latest Decision</th><th>Latest Stage</th><th>Owner</th><th></th></tr></thead>
+        <tbody id="patient-tbody">
+          ${pts.map(pt=>{
+            const last = pt.records[pt.records.length-1];
+            return `
+            <tr class="pt-row" onclick="togglePatient('${pt.mri}')">
+              <td>▶ <b>${pt.lastName}, ${pt.firstName}</b></td>
+              <td>${pt.mri}</td>
+              <td>${pt.records.length}</td>
+              <td style="font-size:12px">${last.insuranceProvider||'-'}</td>
+              <td>${decisionBadge(last.decision)}</td>
+              <td style="font-size:11px">${last.currentStage||'-'}</td>
+              <td style="font-size:11px">${last.currentOwner||'-'}</td>
+              <td><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();addNextAuthPeriod('${pt.mri}')">+ Auth Period</button></td>
+            </tr>
+            <tr id="expand-${pt.mri.replace(/[^a-z0-9]/gi,'-')}" class="hidden">
+              <td colspan="8" style="padding:0;background:#f8fafc">
+                <div style="padding:10px 20px">
+                  <table class="sub-table">
+                    <thead><tr><th>Period</th><th>Auth Code</th><th>Date Range</th><th>Req/Auth Days</th><th>Decision</th><th>Stage</th><th>Owner</th><th>Tasks</th><th></th></tr></thead>
+                    <tbody>
+                      ${pt.records.map((r,i)=>{
+                        const label = i===0?'Initial PA':`Concurrent Review ${i}`;
+                        const openTasks = (r.tasks||[]).filter(t=>!t.done).length;
+                        return `<tr>
+                          <td>${label}</td>
+                          <td>${r.authCode||'-'}</td>
+                          <td style="font-size:11px">${r.authStart||'-'} → ${r.authEnd||'-'}</td>
+                          <td>${r.daysRequested||'-'} / ${r.daysAuthorized||0}</td>
+                          <td>${decisionBadge(r.decision)}</td>
+                          <td style="font-size:11px">${r.currentStage||'-'}</td>
+                          <td style="font-size:11px">${r.currentOwner||'-'}</td>
+                          <td>${openTasks>0?`<span class="badge badge-urgent">${openTasks} open</span>`:'-'}</td>
+                          <td><button class="btn btn-ghost btn-sm" onclick="openEditRecord('${r.id}')">Edit</button></td>
+                        </tr>`;
+                      }).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function togglePatient(mri){
+  const safeId = mri.replace(/[^a-z0-9]/gi,'-');
+  const row = document.getElementById('expand-'+safeId);
+  if(!row) return;
+  const isHidden = row.classList.contains('hidden');
+  row.classList.toggle('hidden',!isHidden);
+  // Flip arrow
+  const ptRows = document.querySelectorAll('.pt-row');
+  ptRows.forEach(r=>{
+    if(r.onclick&&r.onclick.toString().includes(mri)){
+      const first = r.querySelector('td');
+      if(first) first.innerHTML = first.innerHTML.replace(/[▶▼]/,isHidden?'▼':'▶');
+    }
+  });
+}
+
+function addNextAuthPeriod(mri){
+  const records = loadData();
+  const ptRecords = records.filter(r=>r.mri===mri);
+  const template = ptRecords[ptRecords.length-1]||{};
+  currentRecord = {
+    id: genId(),
+    mri: template.mri||mri,
+    patientLastName: template.patientLastName||'',
+    patientFirstName: template.patientFirstName||'',
+    admissionDate: template.admissionDate||'',
+    insuranceProvider: template.insuranceProvider||'',
+    insuranceType: template.insuranceType||'',
+    authorizedLevelOfCare: template.authorizedLevelOfCare||'',
+    authCode:'',authStart:'',authEnd:'',daysAuthorized:0,daysRequested:0,
+    paSubmissionDate:'',dateAuthReceived:'',decision:'Pending',
+    denialReason:'',denialSubcategory:'',avoidable:'',
+    appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',
+    urReviewer:template.urReviewer||'',currentOwner:template.currentOwner||'',
+    department:template.department||'UR',currentStage:'Ready to Submit',priority:'Normal',
+    handoffNotes:'',tasks:[],isTest:template.isTest||false,
+    createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
+  };
+  openModal();
+}
+
+// ============================================================
+// DENIALS
+// ============================================================
+function renderDenials(c){
+  const records = loadData().filter(r=>r.decision==='Denied'||r.decision==='Partial');
+  c.innerHTML = `
+  <div class="card">
+    <div class="card-header"><span class="card-title">Denials & Partial Approvals (${records.length})</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Patient</th><th>Payer</th><th>LOC</th><th>Auth Code</th><th>Decision</th><th>Denial Reason</th><th>Avoidable</th><th>Appeal</th><th>Days Req</th><th>Next Task</th><th>Action</th></tr></thead>
+        <tbody>
+          ${records.length===0?'<tr><td colspan="11" style="text-align:center;color:#94a3b8;padding:32px">No denials</td></tr>':''}
+          ${records.map(r=>{
+            const nextTask = (r.tasks||[]).find(t=>!t.done);
+            const due = nextTask?.dueDate||'';
+            const dueCls = isOverdue(due)?'due-overdue':isDueToday(due)?'due-today':'';
+            return `<tr>
+              <td><b>${r.patientLastName}, ${r.patientFirstName}</b><br><span class="text-muted text-sm">${r.mri}</span></td>
+              <td style="font-size:12px">${r.insuranceProvider||'-'}</td>
+              <td>${r.authorizedLevelOfCare||'-'}</td>
+              <td style="font-size:12px">${r.authCode||'-'}</td>
+              <td>${decisionBadge(r.decision)}</td>
+              <td style="font-size:11px">${r.denialReason||'-'}</td>
+              <td style="font-size:11px">${r.avoidable?avoidableBadge(r.avoidable):'-'}</td>
+              <td style="font-size:11px">${r.appealFiled||'-'}</td>
+              <td>${r.daysRequested||'-'}</td>
+              <td class="${dueCls}" style="font-size:11px">${nextTask?nextTask.description:'-'}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openEditRecord('${r.id}')">Edit</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// APPEALS
+// ============================================================
+function renderAppeals(c){
+  const records = loadData().filter(r=>r.appealFiled&&r.appealFiled.trim()!=='');
+  c.innerHTML = `
+  <div class="card">
+    <div class="card-header"><span class="card-title">Appeals (${records.length})</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Patient</th><th>Payer</th><th>LOC</th><th>Auth Code</th><th>Decision</th><th>Appeal Type</th><th>Appeal Outcome</th><th>Days to File</th><th>Stage</th><th>Action</th></tr></thead>
+        <tbody>
+          ${records.length===0?'<tr><td colspan="10" style="text-align:center;color:#94a3b8;padding:32px">No appeals</td></tr>':''}
+          ${records.map(r=>{
+            const daysToFile = r.paSubmissionDate&&r.dateAuthReceived?daysBetween(r.paSubmissionDate,r.dateAuthReceived):'-';
+            return `<tr>
+              <td><b>${r.patientLastName}, ${r.patientFirstName}</b><br><span class="text-muted text-sm">${r.mri}</span></td>
+              <td style="font-size:12px">${r.insuranceProvider||'-'}</td>
+              <td>${r.authorizedLevelOfCare||'-'}</td>
+              <td style="font-size:12px">${r.authCode||'-'}</td>
+              <td>${decisionBadge(r.decision)}</td>
+              <td style="font-size:11px">${r.appealFiled||'-'}</td>
+              <td style="font-size:11px">${r.appealOutcome||'Pending'}</td>
+              <td>${daysToFile}</td>
+              <td style="font-size:11px">${r.currentStage||'-'}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openEditRecord('${r.id}')">Edit</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// WRITE-OFFS
+// ============================================================
+function renderWriteoffs(c){
+  const records = loadData().filter(r=>r.decision==='Denied'&&(!r.appealFiled||r.appealOutcome==='Upheld'));
+  const ratePerDay = 450;
+  const totalRisk = records.reduce((s,r)=>{
+    const gap = Math.max(0,(r.daysRequested||0)-(r.daysAuthorized||0));
+    return s + gap*ratePerDay;
+  },0);
+  c.innerHTML = `
+  <div class="kpi-grid" style="margin-bottom:16px">
+    <div class="kpi-card"><div class="kpi-value" style="color:#ef4444">${records.length}</div><div class="kpi-label">Write-Off Records</div></div>
+    <div class="kpi-card"><div class="kpi-value" style="color:#ef4444">$${totalRisk.toLocaleString()}</div><div class="kpi-label">Est. Revenue at Risk</div><div class="kpi-sub">$450/day × days gap</div></div>
+    <div class="kpi-card"><div class="kpi-value">${records.filter(r=>r.avoidable==='Avoidable').length}</div><div class="kpi-label">Avoidable</div></div>
+    <div class="kpi-card"><div class="kpi-value">${records.filter(r=>r.avoidable==='Not Avoidable').length}</div><div class="kpi-label">Not Avoidable</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Write-Off Detail</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Patient</th><th>Payer</th><th>LOC</th><th>Auth Code</th><th>Denial Reason</th><th>Days Gap</th><th>Est. Revenue at Risk</th><th>Avoidable</th><th>Appeal Status</th><th>Action</th></tr></thead>
+        <tbody>
+          ${records.length===0?'<tr><td colspan="10" style="text-align:center;color:#94a3b8;padding:32px">No write-offs</td></tr>':''}
+          ${records.map(r=>{
+            const gap = Math.max(0,(r.daysRequested||0)-(r.daysAuthorized||0));
+            const risk = gap*ratePerDay;
+            return `<tr>
+              <td><b>${r.patientLastName}, ${r.patientFirstName}</b><br><span class="text-muted text-sm">${r.mri}</span></td>
+              <td style="font-size:12px">${r.insuranceProvider||'-'}</td>
+              <td>${r.authorizedLevelOfCare||'-'}</td>
+              <td style="font-size:12px">${r.authCode||'-'}</td>
+              <td style="font-size:11px">${r.denialReason||'-'}</td>
+              <td>${gap} days</td>
+              <td style="color:#ef4444;font-weight:600">$${risk.toLocaleString()}</td>
+              <td>${r.avoidable?avoidableBadge(r.avoidable):'-'}</td>
+              <td style="font-size:11px">${r.appealFiled?`${r.appealFiled}: ${r.appealOutcome||'Pending'}`:'No Appeal'}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openEditRecord('${r.id}')">Edit</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// STAFF PERFORMANCE
+// ============================================================
+function renderPerformance(c){
+  const records = loadData();
+  const staff = COORDINATORS.slice(0,4);
+  const scores = staff.map(name=>{
+    const mine = records.filter(r=>r.urReviewer===name||r.currentOwner===name);
+    const total = mine.length;
+    const approved = mine.filter(r=>r.decision==='Approved').length;
+    const denied = mine.filter(r=>r.decision==='Denied').length;
+    const avoidable = mine.filter(r=>r.avoidable==='Avoidable').length;
+    const appeals = mine.filter(r=>r.appealFiled);
+    const overturned = appeals.filter(r=>r.appealOutcome==='Overturned').length;
+    const openCases = mine.filter(r=>!['Closed - Discharged','Closed - AMA','Closed - Written Off'].includes(r.currentStage)).length;
+    const allTasks = mine.flatMap(r=>r.tasks||[]);
+    const overdueTasks = allTasks.filter(t=>!t.done&&isOverdue(t.dueDate)).length;
+    return {name,total,approved,denied,avoidable,appeals:appeals.length,overturned,openCases,overdueTasks,
+      approvalRate:total?Math.round(approved/total*100):0,
+      denialRate:total?Math.round(denied/total*100):0,
+      avoidableRate:denied?Math.round(avoidable/denied*100):0,
+      overturnRate:appeals.length?Math.round(overturned/appeals.length*100):0
+    };
+  });
+  c.innerHTML = `
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+    ${scores.map(s=>`
+    <div class="card">
+      <div class="card-header"><span class="card-title">${s.name}</span><span class="badge badge-normal">${s.total} records</span></div>
+      <table style="width:100%;font-size:13px">
+        <tr><td style="color:#64748b">Approval Rate</td><td style="text-align:right;font-weight:600;color:#10b981">${s.approvalRate}%</td></tr>
+        <tr><td style="color:#64748b">Denial Rate</td><td style="text-align:right;font-weight:600;color:#ef4444">${s.denialRate}%</td></tr>
+        <tr><td style="color:#64748b">Avoidable Denial Rate</td><td style="text-align:right;font-weight:600;color:#f59e0b">${s.avoidableRate}%</td></tr>
+        <tr><td style="color:#64748b">Appeal Overturn Rate</td><td style="text-align:right;font-weight:600;color:#8b5cf6">${s.overturnRate}%</td></tr>
+        <tr><td style="color:#64748b">Open Cases</td><td style="text-align:right;font-weight:700">${s.openCases}</td></tr>
+        <tr><td style="color:#64748b">Overdue Tasks</td><td style="text-align:right;font-weight:700;color:${s.overdueTasks>0?'#ef4444':'#10b981'}">${s.overdueTasks}</td></tr>
+      </table>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function renderSettings(c){
+  c.innerHTML = `
+  <div class="card" style="max-width:600px">
+    <div class="card-title" style="margin-bottom:16px">Data Management</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px">
+        <div><div style="font-weight:600">Export JSON Backup</div><div style="font-size:12px;color:#64748b">Download all records as a JSON file</div></div>
+        <button class="btn btn-success" onclick="exportJson()">⬇ Export</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#f8fafc;border-radius:8px">
+        <div><div style="font-weight:600">Import Sunwave CSV</div><div style="font-size:12px;color:#64748b">Upload and merge authorization data</div></div>
+        <button class="btn btn-primary" onclick="openCsvModal()">⬆ Import CSV</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff7ed;border-radius:8px;border:1px solid #fed7aa">
+        <div><div style="font-weight:600">Delete TEST Records</div><div style="font-size:12px;color:#64748b">Remove all demo records (isTest=true)</div></div>
+        <button class="btn btn-secondary" onclick="deleteTestRecords()">🗑 Delete TEST</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca">
+        <div><div style="font-weight:600;color:#dc2626">Clear All Records</div><div style="font-size:12px;color:#64748b">Permanently delete all data and reset app</div></div>
+        <button class="btn btn-danger" onclick="clearAllRecords()">⚠ Clear All</button>
+      </div>
+    </div>
+    <div style="margin-top:24px">
+      <div class="card-title" style="margin-bottom:10px">About</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.7">
+        <b>Strive UR Intelligence Tracker</b> v1.0<br>
+        Strive Recovery of Fort Wayne<br>
+        Data stored in browser localStorage (key: strive_ur_v3)<br>
+        All data stays on this device — no server sync.
+      </div>
+    </div>
+  </div>`;
+}
+
+function exportJson(){
+  const data = loadData();
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url;a.download='strive-ur-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();URL.revokeObjectURL(url);
+}
+
+function deleteTestRecords(){
+  if(!confirm('Delete all TEST demo records? This cannot be undone.')) return;
+  const cleaned = loadData().filter(r=>!r.isTest);
+  saveData(cleaned);
+  alert(`TEST records removed. ${cleaned.length} records remain.`);
+  renderView(currentView);
+}
+
+function clearAllRecords(){
+  if(!confirm('This will PERMANENTLY delete ALL records. Are you sure?')) return;
+  if(!confirm('⚠ SECOND CONFIRMATION: All data will be lost. Continue?')) return;
+  saveData([]);
+  localStorage.removeItem(SETUP_KEY);
+  location.reload();
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openNewRecord(){
+  currentRecord = {
+    id:genId(),mri:'',patientLastName:'',patientFirstName:'',admissionDate:'',
+    insuranceProvider:'',insuranceType:'',authorizedLevelOfCare:'',
+    authCode:'',authStart:'',authEnd:'',daysAuthorized:0,daysRequested:0,
+    paSubmissionDate:'',dateAuthReceived:'',decision:'Pending',
+    denialReason:'',denialSubcategory:'',avoidable:'',
+    appealFiled:'',appealOutcome:'',dischargeDate:'',dischargeType:'',
+    urReviewer:'',currentOwner:'',department:'UR',currentStage:'Waiting on Clinical Notes',
+    priority:'Normal',handoffNotes:'',tasks:[],isTest:false,
+    createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
+  };
+  openModal();
+}
+
+function openEditRecord(id){
+  const records = loadData();
+  currentRecord = JSON.parse(JSON.stringify(records.find(r=>r.id===id)||{}));
+  if(!currentRecord.tasks) currentRecord.tasks=[];
+  openModal();
+}
+
+function openModal(){
+  currentTab = 'auth';
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  document.getElementById('modal-title').textContent = currentRecord.patientLastName? `${currentRecord.patientLastName}, ${currentRecord.patientFirstName}` : 'New Auth Record';
+  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab==='auth'));
+  renderModalTab('auth');
+}
+
+function closeModal(){
+  document.getElementById('modal-overlay').classList.add('hidden');
+  currentRecord = null;
+}
+
+function switchTab(el){
+  // Collect form data before switching
+  collectFormData();
+  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = el.dataset.tab;
+  renderModalTab(currentTab);
+}
+
+function renderModalTab(tab){
+  const b = document.getElementById('modal-body');
+  if(tab==='auth') b.innerHTML = renderAuthTab();
+  else if(tab==='workflow') b.innerHTML = renderWorkflowTab();
+  else if(tab==='tasks') b.innerHTML = renderTasksTab();
+}
+
+function renderAuthTab(){
+  const r = currentRecord;
+  const sel = (name,opts,val) => `<select name="${name}">${opts.map(o=>`<option value="${o}" ${o===val?'selected':''}>${o}</option>`).join('')}</select>`;
+  const inp = (name,val,type='text') => `<input type="${type}" name="${name}" value="${esc(val||'')}">`;
+  return `<div class="form-grid">
+    <div class="form-group"><label>MRI #</label>${inp('mri',r.mri)}</div>
+    <div class="form-group"><label>Last Name</label>${inp('patientLastName',r.patientLastName)}</div>
+    <div class="form-group"><label>First Name</label>${inp('patientFirstName',r.patientFirstName)}</div>
+    <div class="form-group"><label>Admission Date</label>${inp('admissionDate',r.admissionDate,'date')}</div>
+    <div class="form-group"><label>Insurance Provider</label>${sel('insuranceProvider',['',...PAYERS],r.insuranceProvider)}</div>
+    <div class="form-group"><label>Insurance Type</label>${sel('insuranceType',['','Commercial','Medicaid','Medicare','Medicare Advantage'],r.insuranceType)}</div>
+    <div class="form-group"><label>Auth Level of Care</label>${sel('authorizedLevelOfCare',['',...LOC_OPTIONS],r.authorizedLevelOfCare)}</div>
+    <div class="form-group"><label>Auth Code</label>${inp('authCode',r.authCode)}</div>
+    <div class="form-group"><label>Auth Start</label>${inp('authStart',r.authStart,'date')}</div>
+    <div class="form-group"><label>Auth End</label>${inp('authEnd',r.authEnd,'date')}</div>
+    <div class="form-group"><label>Days Authorized</label>${inp('daysAuthorized',r.daysAuthorized,'number')}</div>
+    <div class="form-group"><label>Days Requested</label>${inp('daysRequested',r.daysRequested,'number')}</div>
+    <div class="form-group"><label>PA Submission Date</label>${inp('paSubmissionDate',r.paSubmissionDate,'date')}</div>
+    <div class="form-group"><label>Date Auth Received</label>${inp('dateAuthReceived',r.dateAuthReceived,'date')}</div>
+    <div class="form-group"><label>UR Reviewer</label>${sel('urReviewer',['',...COORDINATORS],r.urReviewer)}</div>
+    <div class="form-group full"><div class="section-heading">Decision</div></div>
+    <div class="form-group"><label>Decision</label>${sel('decision',['Pending','Approved','Denied','Partial'],r.decision)}</div>
+    <div class="form-group"><label>Denial Reason</label>${sel('denialReason',['none',...DENIAL_REASONS],r.denialReason||'none')}</div>
+    <div class="form-group"><label>Denial Subcategory</label>${inp('denialSubcategory',r.denialSubcategory)}</div>
+    <div class="form-group"><label>Avoidable?</label>${sel('avoidable',['','Avoidable','Not Avoidable','Under Review'],r.avoidable)}</div>
+    <div class="form-group"><label>Appeal Filed</label>${sel('appealFiled',['','P2P','Level 1','Level 2','External Review'],r.appealFiled)}</div>
+    <div class="form-group"><label>Appeal Outcome</label>${sel('appealOutcome',['','Pending','Overturned','Upheld'],r.appealOutcome)}</div>
+    <div class="form-group"><label>Discharge Date</label>${inp('dischargeDate',r.dischargeDate,'date')}</div>
+    <div class="form-group"><label>Discharge Type</label>${sel('dischargeType',['','Graduated','AMA','Transfer','Deceased'],r.dischargeType)}</div>
+  </div>`;
+}
+
+function renderWorkflowTab(){
+  const r = currentRecord;
+  const sel = (name,opts,val) => `<select name="${name}">${opts.map(o=>`<option value="${o}" ${o===val?'selected':''}>${o||'-- Select --'}</option>`).join('')}</select>`;
+  const inp = (name,val,type='text') => `<input type="${type}" name="${name}" value="${esc(val||'')}">`;
+  return `<div class="form-grid">
+    <div class="form-group"><label>Current Owner</label>${sel('currentOwner',['',...COORDINATORS],r.currentOwner)}</div>
+    <div class="form-group"><label>Department</label>${sel('department',['UR','Clinical','Billing','Medical','Administration'],r.department)}</div>
+    <div class="form-group"><label>Current Stage</label>${sel('currentStage',['',...STAGES],r.currentStage)}</div>
+    <div class="form-group"><label>Priority</label>${sel('priority',['Normal','Low','High','Urgent'],r.priority)}</div>
+    <div class="form-group full"><label>Handoff Notes</label><textarea name="handoffNotes" rows="4">${esc(r.handoffNotes||'')}</textarea></div>
+    <div class="form-group"><label>Is Test Record?</label>${sel('isTest',['false','true'],String(r.isTest||false))}</div>
+  </div>`;
+}
+
+function renderTasksTab(){
+  const r = currentRecord;
+  const tasks = r.tasks||[];
+  return `<div>
+    <div style="margin-bottom:12px;display:flex;justify-content:flex-end">
+      <button class="btn btn-primary btn-sm" onclick="addTask()">+ Add Task</button>
+    </div>
+    <div id="task-list">
+      ${tasks.length===0?'<div style="text-align:center;color:#94a3b8;padding:24px">No tasks yet</div>':''}
+      ${tasks.map((t,i)=>`
+      <div class="task-item" id="task-${t.id}">
+        <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')">
+        <div style="flex:1">
+          <div class="${t.done?'task-done':''}">${esc(t.description)}</div>
+          <div class="task-meta">
+            Assigned: ${t.assignedTo||'-'} &nbsp;|&nbsp; Due: <span class="${isOverdue(t.dueDate)&&!t.done?'due-overdue':''}">${t.dueDate||'-'}</span> &nbsp;|&nbsp; ${priorityBadge(t.priority)}
+            ${t.done&&t.doneAt?`&nbsp;|&nbsp; <span style="color:#10b981">Done ${t.doneAt}</span>`:''}
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="editTask('${t.id}')">✏</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTask('${t.id}')">🗑</button>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function addTask(){
+  collectFormData();
+  const id = 'task-'+Date.now();
+  const desc = prompt('Task description:');
+  if(!desc) return;
+  const assignedTo = promptSelect('Assign to:',COORDINATORS) || '';
+  const dueDate = prompt('Due date (YYYY-MM-DD):','');
+  const priority = promptSelect('Priority:',['Normal','High','Urgent','Low']) || 'Normal';
+  if(!currentRecord.tasks) currentRecord.tasks=[];
+  currentRecord.tasks.push({id,description:desc,assignedTo,dueDate,priority,done:false,doneAt:''});
+  renderModalTab('tasks');
+}
+
+function editTask(id){
+  collectFormData();
+  const task = currentRecord.tasks.find(t=>t.id===id);
+  if(!task) return;
+  const desc = prompt('Task description:',task.description);
+  if(desc===null) return;
+  task.description = desc;
+  task.dueDate = prompt('Due date (YYYY-MM-DD):',task.dueDate)||task.dueDate;
+  task.priority = promptSelect('Priority:',['Normal','High','Urgent','Low'],task.priority)||task.priority;
+  renderModalTab('tasks');
+}
+
+function deleteTask(id){
+  collectFormData();
+  if(!confirm('Delete this task?')) return;
+  currentRecord.tasks = (currentRecord.tasks||[]).filter(t=>t.id!==id);
+  renderModalTab('tasks');
+}
+
+function toggleTask(id){
+  collectFormData();
+  const task = currentRecord.tasks.find(t=>t.id===id);
+  if(task){
+    task.done = !task.done;
+    task.doneAt = task.done ? new Date().toISOString().slice(0,10) : '';
+  }
+  renderModalTab('tasks');
+}
+
+function promptSelect(msg,opts,current){
+  const s = prompt(msg+'\n'+opts.map((o,i)=>`${i+1}. ${o}`).join('\n')+'\n\nEnter number or value:');
+  if(!s) return current||'';
+  const n = parseInt(s);
+  if(!isNaN(n)&&n>=1&&n<=opts.length) return opts[n-1];
+  return s;
+}
+
+function collectFormData(){
+  if(!currentRecord) return;
+  const b = document.getElementById('modal-body');
+  b.querySelectorAll('[name]').forEach(el=>{
+    const k = el.name;
+    let v = el.value;
+    if(k==='daysAuthorized'||k==='daysRequested') v=parseInt(v)||0;
+    if(k==='isTest') v=(v==='true');
+    if(k==='denialReason'&&v==='none') v='';
+    currentRecord[k]=v;
+  });
+}
+
+function saveRecord(){
+  collectFormData();
+  currentRecord.updatedAt = new Date().toISOString();
+  const records = loadData();
+  const idx = records.findIndex(r=>r.id===currentRecord.id);
+  if(idx>=0) records[idx]=currentRecord;
+  else records.push(currentRecord);
+  saveData(records);
+  closeModal();
+  renderView(currentView);
+}
+
+// ============================================================
+// CSV IMPORT
+// ============================================================
+function openCsvModal(){
+  document.getElementById('csv-overlay').classList.remove('hidden');
+  document.getElementById('csv-preview').innerHTML='';
+  document.getElementById('csv-confirm-btn').classList.add('hidden');
+  csvParsed=[];
+}
+function closeCsvModal(){
+  document.getElementById('csv-overlay').classList.add('hidden');
+}
+function handleDragOver(e){e.preventDefault();e.currentTarget.classList.add('dragover');}
+function handleDragLeave(e){e.currentTarget.classList.remove('dragover');}
+function handleDrop(e){
+  e.preventDefault();e.currentTarget.classList.remove('dragover');
+  const file=e.dataTransfer.files[0];
+  if(file) processCsvFile(file);
+}
+function handleFileSelect(e){
+  const file=e.target.files[0];
+  if(file) processCsvFile(file);
+}
+
+function processCsvFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const text=e.target.result;
+    const rows=parseCsv(text);
+    if(rows.length<2){alert('CSV appears empty or invalid.');return;}
+    const headers=rows[0].map(h=>h.trim().toLowerCase().replace(/\s+/g,'_'));
+    const records=rows.slice(1).filter(r=>r.some(c=>c.trim()));
+    csvParsed=records.map(row=>{
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=row[i]?.trim()||'');
+      return mapSunwaveRow(obj);
+    }).filter(r=>r.mri||r.authCode);
+    previewCsv(csvParsed);
+  };
+  reader.readAsText(file);
+}
+
+function mapSunwaveRow(obj){
+  // Map common Sunwave CSV column names to our schema
+  const g=k=>obj[k]||obj[k.replace(/_/g,' ')]||'';
+  return {
+    _csvRaw:obj,
+    mri: g('mri')||g('patient_mri')||g('mri_number'),
+    patientLastName: g('last_name')||g('patient_last_name'),
+    patientFirstName: g('first_name')||g('patient_first_name'),
+    admissionDate: fmtDate(g('admission_date')||g('admit_date')),
+    insuranceProvider: g('insurance_provider')||g('payer')||g('insurance'),
+    insuranceType: g('insurance_type')||g('plan_type'),
+    authorizedLevelOfCare: g('level_of_care')||g('loc')||g('authorized_level_of_care'),
+    authCode: g('auth_code')||g('authorization_code')||g('auth_number'),
+    authStart: fmtDate(g('auth_start')||g('auth_start_date')||g('authorization_start')),
+    authEnd: fmtDate(g('auth_end')||g('auth_end_date')||g('authorization_end')),
+    daysAuthorized: parseInt(g('days_authorized')||g('authorized_days'))||0,
+    dischargeDate: fmtDate(g('discharge_date')),
+    dischargeType: g('discharge_type')||g('discharge_reason'),
+    urReviewer: g('ur_reviewer')||g('reviewer'),
+  };
+}
+
+function fmtDate(s){
+  if(!s) return '';
+  // Try MM/DD/YYYY -> YYYY-MM-DD
+  const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m) return `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+  // Already YYYY-MM-DD
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return s;
+}
+
+function previewCsv(parsed){
+  const existing=loadData();
+  const results=parsed.map(r=>{
+    const matchById=r.authCode?existing.find(e=>e.authCode&&e.authCode===r.authCode):null;
+    const matchByFallback=!matchById&&r.mri&&r.authStart?existing.find(e=>e.mri===r.mri&&e.authStart===r.authStart):null;
+    const match=matchById||matchByFallback;
+    return {...r,_status:match?'update':'new',_existingId:match?.id||null};
+  });
+  csvParsed=results;
+  const newCount=results.filter(r=>r._status==='new').length;
+  const updateCount=results.filter(r=>r._status==='update').length;
+  const div=document.getElementById('csv-preview');
+  div.innerHTML=`
+  <div style="margin:12px 0;display:flex;gap:12px">
+    <span class="badge" style="background:#d1fae5;color:#065f46;font-size:13px;padding:4px 10px">${newCount} New</span>
+    <span class="badge" style="background:#fff7ed;color:#9a3412;font-size:13px;padding:4px 10px">${updateCount} Updates</span>
+  </div>
+  <div class="tbl-wrap" style="max-height:320px;overflow-y:auto">
+    <table><thead><tr><th>Status</th><th>MRI</th><th>Name</th><th>Auth Code</th><th>Payer</th><th>LOC</th><th>Auth Start</th><th>Auth End</th><th>Days Auth</th></tr></thead>
+    <tbody>${results.map(r=>`<tr style="background:${r._status==='new'?'#f0fdf4':'#fff7ed'}">
+      <td><span class="badge ${r._status==='new'?'badge-approved':'badge-partial'}">${r._status==='new'?'NEW':'UPDATE'}</span></td>
+      <td>${r.mri}</td><td>${r.patientLastName}, ${r.patientFirstName}</td><td>${r.authCode||'-'}</td>
+      <td style="font-size:11px">${r.insuranceProvider||'-'}</td><td>${r.authorizedLevelOfCare||'-'}</td>
+      <td>${r.authStart||'-'}</td><td>${r.authEnd||'-'}</td><td>${r.daysAuthorized||0}</td>
+    </tr>`).join('')}</tbody></table>
+  </div>`;
+  if(results.length) document.getElementById('csv-confirm-btn').classList.remove('hidden');
+}
+
+function confirmCsvImport(){
+  const records=loadData();
+  let added=0,updated=0;
+  csvParsed.forEach(r=>{
+    const {_csvRaw,_status,_existingId,...data}=r;
+    if(_status==='new'){
+      records.push({
+        ...data,
+        id:data.authCode?'sw-'+data.authCode:'sw-'+genId(),
+        decision:'Pending',denialReason:'',denialSubcategory:'',avoidable:'',
+        appealFiled:'',appealOutcome:'',paSubmissionDate:'',dateAuthReceived:'',
+        daysRequested:data.daysAuthorized||0,
+        currentOwner:'',department:'UR',currentStage:'Waiting on Clinical Notes',
+        priority:'Normal',handoffNotes:'',tasks:[],isTest:false,
+        createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
+      });
+      added++;
+    } else {
+      const idx=records.findIndex(e=>e.id===_existingId);
+      if(idx>=0){
+        // Preserve all manual fields, only update Sunwave fields
+        const keep=records[idx];
+        records[idx]={...keep,...data,id:keep.id,
+          decision:keep.decision,denialReason:keep.denialReason,denialSubcategory:keep.denialSubcategory,
+          avoidable:keep.avoidable,appealFiled:keep.appealFiled,appealOutcome:keep.appealOutcome,
+          paSubmissionDate:keep.paSubmissionDate,dateAuthReceived:keep.dateAuthReceived,
+          daysRequested:keep.daysRequested,currentOwner:keep.currentOwner,department:keep.department,
+          currentStage:keep.currentStage,priority:keep.priority,handoffNotes:keep.handoffNotes,
+          tasks:keep.tasks,updatedAt:new Date().toISOString()
+        };
+        updated++;
+      }
+    }
+  });
+  saveData(records);
+  closeCsvModal();
+  alert(`Import complete: ${added} new records added, ${updated} records updated.`);
+  renderView(currentView);
+}
+
+function parseCsv(text){
+  const rows=[];
+  let row=[],cell='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(inQ){
+      if(c==='"'&&n==='"'){cell+='"';i++;}
+      else if(c==='"') inQ=false;
+      else cell+=c;
+    } else {
+      if(c==='"') inQ=true;
+      else if(c===','){row.push(cell);cell='';}
+      else if(c==='\n'||c==='\r'){
+        row.push(cell);cell='';
+        if(row.some(x=>x)){rows.push(row);}
+        row=[];
+        if(c==='\r'&&n==='\n') i++;
+      } else cell+=c;
+    }
+  }
+  if(cell||row.length){row.push(cell);if(row.some(x=>x))rows.push(row);}
+  return rows;
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function decisionBadge(d){
+  const map={Approved:'approved',Denied:'denied',Partial:'partial',Pending:'pending'};
+  return `<span class="badge badge-${map[d]||'pending'}">${d||'—'}</span>`;
+}
+function priorityBadge(p){
+  const map={Urgent:'urgent',High:'high',Normal:'normal',Low:'low'};
+  return `<span class="badge badge-${map[p]||'normal'}">${p||'Normal'}</span>`;
+}
+function avoidableBadge(a){
+  const map={'Avoidable':'badge-denied','Not Avoidable':'badge-normal','Under Review':'badge-partial'};
+  return `<span class="badge ${map[a]||''}">${a}</span>`;
+}
+
+function daysBetween(a,b){
+  if(!a||!b) return 0;
+  return Math.abs(Math.round((new Date(b)-new Date(a))/(1000*60*60*24)));
+}
+
+const today = ()=>new Date().toISOString().slice(0,10);
+function isOverdue(d){return d&&d<today();}
+function isDueToday(d){return d&&d===today();}
+function isDueSoon(d){
+  if(!d) return false;
+  const diff=(new Date(d)-new Date(today()))/(1000*60*60*24);
+  return diff>=0&&diff<=3;
+}
+</script>
+</body>
+</html>
