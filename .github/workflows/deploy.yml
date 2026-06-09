@@ -21,10 +21,10 @@ jobs:
       # Inject Azure AD credentials from GitHub Variables into config.js
       - name: Write config.js from GitHub Variables
         run: |
-          cat > config.js << 'EOF'
+          cat > config.js << EOF
           const AZURE_CONFIG = {
-            CLIENT_ID: '${{ vars.AZURE_CLIENT_ID }}',
-            TENANT_ID: '${{ vars.AZURE_TENANT_ID }}',
+            CLIENT_ID: '${{ secrets.AZURE_CLIENT_ID }}',
+            TENANT_ID: '${{ secrets.AZURE_TENANT_ID }}',
           };
           EOF
 
