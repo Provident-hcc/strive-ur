@@ -273,9 +273,58 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 .hidden{display:none !important}
 /* CSV modal */
 .dz{background:var(--bg);border:2px dashed var(--border);border-radius:9px;padding:26px;text-align:center;margin-bottom:12px}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1B3A6B 0%,#2a5298 50%,#1e6fa8 100%);display:flex;align-items:center;justify-content:center;font-family:'DM Sans',system-ui,sans-serif}
+#login-screen.hidden{display:none!important}
+.login-card{background:#fff;border-radius:18px;padding:44px 40px 36px;width:420px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.28);text-align:center}
+.login-logo{font-size:26px;font-weight:900;letter-spacing:.18em;color:#1B3A6B;margin-bottom:5px}
+.login-sub{font-size:12px;color:#64748b;margin-bottom:28px;letter-spacing:.02em}
+.login-title{font-size:17px;font-weight:800;color:#1a202c;margin-bottom:8px}
+.login-desc{font-size:13px;color:#64748b;margin-bottom:26px;line-height:1.55}
+.login-ms-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border:1.5px solid #e2e8f0;border-radius:9px;background:#fff;font-size:14px;font-weight:600;color:#1a202c;cursor:pointer;transition:all .15s;font-family:inherit}
+.login-ms-btn:hover{border-color:#4BBDE8;box-shadow:0 4px 16px rgba(75,189,232,.18);background:#f8faff}
+.login-ms-btn:active{transform:scale(.98)}
+.ms-logo{width:20px;height:20px;flex-shrink:0}
+.login-footer{margin-top:20px;font-size:11px;color:#94a3b8}
+.login-error{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;margin-bottom:16px;display:none}
+.login-spinner{display:none;justify-content:center;margin-bottom:16px}
+.login-spinner span{width:8px;height:8px;border-radius:50%;background:#4BBDE8;display:inline-block;margin:0 3px;animation:ls .8s infinite alternate}
+.login-spinner span:nth-child(2){animation-delay:.2s}
+.login-spinner span:nth-child(3){animation-delay:.4s}
+@keyframes ls{0%{opacity:.25;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+/* User chip in topbar */
+.user-chip{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 5px;border-radius:20px;background:#f0f4f8;border:1px solid #e2e8f0;cursor:default;flex-shrink:0}
+.user-av{width:26px;height:26px;border-radius:50%;background:#1B3A6B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+.user-name{font-size:11px;font-weight:600;color:#1a202c;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-signout{font-size:10px;color:#64748b;cursor:pointer;padding:2px 6px;border-radius:5px;border:1px solid #e2e8f0;background:#fff;margin-left:2px;font-family:inherit}
+.user-signout:hover{border-color:#dc2626;color:#dc2626}
 </style>
 </head>
 <body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">STRIVE</div>
+    <div class="login-sub">UR Intelligence Tracker</div>
+    <div class="login-title">Sign in to continue</div>
+    <p class="login-desc">Use your work Microsoft 365 account<br>(the same one you sign in to Outlook with).</p>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-spinner" id="login-spinner"><span></span><span></span><span></span></div>
+    <button class="login-ms-btn" id="login-btn" onclick="loginWithMicrosoft()">
+      <svg class="ms-logo" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+        <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+        <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+        <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+      </svg>
+      Sign in with Microsoft
+    </button>
+    <div class="login-footer">Provident Analytics &middot; access restricted to org members</div>
+  </div>
+</div>
+
 <div class="app">
 <nav class="sidebar">
   <div class="sidebar-logo">
@@ -324,6 +373,12 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
         <option>Clinical Team</option><option>Billing</option>
       </select>
       <button class="btn btn-primary" onclick="openAdd()">+ Add Record</button>
+      <!-- User chip — shown after login -->
+      <div class="user-chip" id="user-chip" style="display:none">
+        <div class="user-av" id="user-chip-av">?</div>
+        <span class="user-name" id="user-chip-name"></span>
+        <button class="user-signout" onclick="signOut()" title="Sign out">Sign out</button>
+      </div>
     </div>
   </div>
   <div id="demoslot"></div>
@@ -534,6 +589,141 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
   <div class="mfoot"><button class="btn btn-ghost" onclick="closeCSV()">Cancel</button><button class="btn btn-ghost hidden" id="csvback" onclick="csvBack()">&#8592; Back</button><button class="btn btn-primary hidden" id="csvgo" onclick="doImport()">Import Records</button></div>
 </div>
 </div>
+
+<!-- ── MICROSOFT AUTH (MSAL) ── -->
+<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
+<script>
+// ── Auth configuration ──────────────────────────────────────────────
+const ALLOWED_DOMAINS = ['striverecovery.com','providenthcc.com','gshealthcarellc.com'];
+const AUTH_SESSION_KEY = 'strive_ur_user';
+
+const msalConfig = {
+  auth: {
+    clientId: '00000000-0000-0000-0000-000000000000', // placeholder — see note below
+    authority: 'https://login.microsoftonline.com/common',
+    redirectUri: window.location.origin + window.location.pathname
+  },
+  cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false }
+};
+
+let msalInstance = null;
+try { msalInstance = new msal.PublicClientApplication(msalConfig); } catch(e) {}
+
+const loginScopes = { scopes: ['openid','profile','email','User.Read'] };
+
+function loginWithMicrosoft() {
+  // ── Dev/demo bypass: if no real client ID configured, use email prompt ──
+  if (!msalInstance || msalConfig.auth.clientId === '00000000-0000-0000-0000-000000000000') {
+    showEmailFallback();
+    return;
+  }
+  showSpinner(true);
+  msalInstance.loginPopup(loginScopes).then(function(resp) {
+    var email = (resp.account.username || '').toLowerCase();
+    handleAuthResult(email, resp.account.name || email);
+  }).catch(function(err) {
+    showSpinner(false);
+    showLoginError('Sign-in was cancelled or failed. Please try again.');
+    console.error(err);
+  });
+}
+
+function handleAuthResult(email, name) {
+  var domain = email.split('@')[1] || '';
+  if (!ALLOWED_DOMAINS.includes(domain)) {
+    showSpinner(false);
+    showLoginError('Access denied. Only striverecovery.com, providenthcc.com, and gshealthcarellc.com accounts are allowed.');
+    if (msalInstance) { try { msalInstance.logoutPopup(); } catch(e){} }
+    return;
+  }
+  sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify({ email: email, name: name, domain: domain, ts: Date.now() }));
+  mountApp(email, name);
+}
+
+function mountApp(email, name) {
+  document.getElementById('login-screen').classList.add('hidden');
+  // Populate user chip
+  var initials = name.split(' ').map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase() || email[0].toUpperCase();
+  var chipName = name.split(' ')[0] || email;
+  document.getElementById('user-chip-av').textContent = initials;
+  document.getElementById('user-chip-name').textContent = chipName + ' (' + email.split('@')[1] + ')';
+  document.getElementById('user-chip').style.display = 'flex';
+  // Pre-select coordinator dropdown if name matches
+  var sel = document.getElementById('qCoord');
+  if (sel) {
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].text.toLowerCase().indexOf(name.split(' ')[0].toLowerCase()) !== -1) {
+        sel.selectedIndex = i; break;
+      }
+    }
+  }
+}
+
+function signOut() {
+  sessionStorage.removeItem(AUTH_SESSION_KEY);
+  if (msalInstance) { try { msalInstance.logoutPopup().catch(function(){}); } catch(e){} }
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('user-chip').style.display = 'none';
+}
+
+function showLoginError(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+function showSpinner(on) {
+  document.getElementById('login-spinner').style.display = on ? 'flex' : 'none';
+  document.getElementById('login-btn').style.display = on ? 'none' : 'flex';
+}
+
+// ── Email-based fallback (used when MSAL client ID not yet configured) ──
+function showEmailFallback() {
+  var card = document.querySelector('.login-card');
+  card.innerHTML = '<div class="login-logo">STRIVE</div>'
+    + '<div class="login-sub">UR Intelligence Tracker</div>'
+    + '<div class="login-title">Enter your work email</div>'
+    + '<p class="login-desc" style="margin-bottom:18px">Microsoft SSO setup required for production.<br>For now, verify your email to continue.</p>'
+    + '<div class="login-error" id="login-error" style="display:none"></div>'
+    + '<input id="email-input" type="email" placeholder="you@striverecovery.com" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;transition:border .15s" onfocus="this.style.borderColor=\'#4BBDE8\'" onblur="this.style.borderColor=\'#e2e8f0\'">'
+    + '<button onclick="submitEmailFallback()" style="width:100%;padding:12px;background:#1B3A6B;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s" onmouseover="this.style.background=\'#142d55\'" onmouseout="this.style.background=\'#1B3A6B\'">Continue</button>'
+    + '<div class="login-footer" style="margin-top:16px">Provident Analytics &middot; access restricted to org members</div>';
+}
+function submitEmailFallback() {
+  var email = (document.getElementById('email-input').value || '').trim().toLowerCase();
+  var domain = email.split('@')[1] || '';
+  if (!email || !email.includes('@')) { showLoginError('Please enter a valid email address.'); return; }
+  if (!ALLOWED_DOMAINS.includes(domain)) {
+    showLoginError('Access denied. Only striverecovery.com, providenthcc.com, and gshealthcarellc.com accounts are allowed.');
+    return;
+  }
+  var name = email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+  handleAuthResult(email, name);
+}
+
+// ── On page load: check for existing session or MSAL redirect ──
+window.addEventListener('DOMContentLoaded', function() {
+  var saved = sessionStorage.getItem(AUTH_SESSION_KEY);
+  if (saved) {
+    try {
+      var u = JSON.parse(saved);
+      // Expire session after 12 hours
+      if (u && u.email && (Date.now() - u.ts) < 12 * 60 * 60 * 1000) {
+        mountApp(u.email, u.name || u.email);
+        return;
+      }
+    } catch(e) {}
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
+  }
+  // Handle MSAL redirect response
+  if (msalInstance) {
+    msalInstance.handleRedirectPromise().then(function(resp) {
+      if (resp && resp.account) {
+        handleAuthResult((resp.account.username||'').toLowerCase(), resp.account.name||resp.account.username);
+      }
+    }).catch(function(){});
+  }
+  // Login screen stays visible by default (already shown)
+});
+</script>
 
 <script>
 
