@@ -591,16 +591,21 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 </div>
 
 <!-- ── MICROSOFT AUTH (MSAL) ── -->
+<script src="config.js"></script>
 <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
 <script>
 // ── Auth configuration ──────────────────────────────────────────────
 const ALLOWED_DOMAINS = ['striverecovery.com','providenthcc.com','gshealthcarellc.com'];
 const AUTH_SESSION_KEY = 'strive_ur_user';
 
+// AZURE_CONFIG loaded from config.js
+const _clientId = (typeof AZURE_CONFIG !== 'undefined') ? AZURE_CONFIG.CLIENT_ID : '00000000-0000-0000-0000-000000000000';
+const _tenantId = (typeof AZURE_CONFIG !== 'undefined') ? AZURE_CONFIG.TENANT_ID : 'common';
+
 const msalConfig = {
   auth: {
-    clientId: '00000000-0000-0000-0000-000000000000', // placeholder — see note below
-    authority: 'https://login.microsoftonline.com/common',
+    clientId: _clientId,
+    authority: 'https://login.microsoftonline.com/' + _tenantId,
     redirectUri: window.location.origin + window.location.pathname
   },
   cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false }
@@ -613,7 +618,7 @@ const loginScopes = { scopes: ['openid','profile','email','User.Read'] };
 
 function loginWithMicrosoft() {
   // ── Dev/demo bypass: if no real client ID configured, use email prompt ──
-  if (!msalInstance || msalConfig.auth.clientId === '00000000-0000-0000-0000-000000000000') {
+  if (!msalInstance || _clientId === 'YOUR_CLIENT_ID_HERE' || _clientId === '00000000-0000-0000-0000-000000000000') {
     showEmailFallback();
     return;
   }
