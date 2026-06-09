@@ -1,7 +1,9 @@
 name: Deploy to GitHub Pages
+
 on:
   push:
     branches: [main]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,11 +14,25 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - uses: actions/checkout@v4
+
+      # Inject Azure AD credentials from GitHub Variables into config.js
+      - name: Write config.js from GitHub Variables
+        run: |
+          cat > config.js << 'EOF'
+          const AZURE_CONFIG = {
+            CLIENT_ID: '${{ vars.AZURE_CLIENT_ID }}',
+            TENANT_ID: '${{ vars.AZURE_TENANT_ID }}',
+          };
+          EOF
+
       - uses: actions/configure-pages@v4
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+
       - id: deployment
         uses: actions/deploy-pages@v4
