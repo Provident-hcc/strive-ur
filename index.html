@@ -273,7 +273,6 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 .hidden{display:none !important}
 /* CSV modal */
 .dz{background:var(--bg);border:2px dashed var(--border);border-radius:9px;padding:26px;text-align:center;margin-bottom:12px}
-
 /* ── LOGIN SCREEN ── */
 #login-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1B3A6B 0%,#2a5298 50%,#1e6fa8 100%);display:flex;align-items:center;justify-content:center;font-family:'DM Sans',system-ui,sans-serif}
 #login-screen.hidden{display:none!important}
@@ -293,7 +292,6 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 .login-spinner span:nth-child(2){animation-delay:.2s}
 .login-spinner span:nth-child(3){animation-delay:.4s}
 @keyframes ls{0%{opacity:.25;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
-/* User chip in topbar */
 .user-chip{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 5px;border-radius:20px;background:#f0f4f8;border:1px solid #e2e8f0;cursor:default;flex-shrink:0}
 .user-av{width:26px;height:26px;border-radius:50%;background:#1B3A6B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
 .user-name{font-size:11px;font-weight:600;color:#1a202c;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -321,7 +319,7 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
       </svg>
       Sign in with Microsoft
     </button>
-    <div class="login-footer">Provident Analytics &middot; access restricted to org members</div>
+    <div class="login-footer">Provident Healthcare &middot; access restricted to org members</div>
   </div>
 </div>
 
@@ -350,7 +348,11 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
   <button class="nav-item" onclick="showImport()">&#8593; Import Sunwave</button>
   <button class="nav-item" onclick="exportJSON()">&#8595; Export JSON</button>
   <button class="nav-item" onclick="go('settings')">&#9881; Settings</button>
-  <div class="sidebar-footer">Strive Recovery &middot; Fort Wayne<br>ASAM 3.1 &middot; 3.5 &middot; Indiana</div>
+  <div class="nav-section" style="margin-top:8px">Provident HCC Apps</div>
+  <a class="nav-item" href="https://provident-hcc.github.io/Sunwave/" target="_blank" style="text-decoration:none;color:rgba(255,255,255,.6)">&#9632; Sunwave</a>
+  <a class="nav-item" href="https://provident-hcc.github.io/Sunwave/crm/" target="_blank" style="text-decoration:none;color:rgba(255,255,255,.6)">&#9632; Sunwave CRM</a>
+  <a class="nav-item" href="https://provident-hcc.github.io/Strive/ctm-calls/" target="_blank" style="text-decoration:none;color:rgba(255,255,255,.6)">&#9632; Strive CTM Calls</a>
+  <div class="sidebar-footer">Provident Healthcare Consulting<br>provident-hcc.github.io/strive-ur</div>
 </nav>
 <div class="main">
   <div class="topbar">
@@ -373,11 +375,10 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
         <option>Clinical Team</option><option>Billing</option>
       </select>
       <div style="display:flex;align-items:center;gap:6px">
-        <button id="sync-btn" class="btn" onclick="loadSharePointData()" title="Pull latest data from Sunwave SharePoint" style="display:flex;align-items:center;gap:5px;background:#f0f4f8;border:1px solid var(--border);color:var(--navy);font-weight:600;font-size:12px">⟳ Sync Sunwave</button>
-        <span id="sync-status" style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap"></span>
+        <button id="sync-btn" class="btn" onclick="loadSharePointData()" title="Pull latest data from Sunwave SharePoint" style="display:flex;align-items:center;gap:5px;background:#f0f4f8;border:1px solid var(--border);color:var(--navy);font-weight:600;font-size:12px">&#10227; Sync Sunwave</button>
+        <span id="sync-status" style="font-size:10px;color:var(--muted);white-space:nowrap"></span>
       </div>
       <button class="btn btn-primary" onclick="openAdd()">+ Add Record</button>
-      <!-- User chip — shown after login -->
       <div class="user-chip" id="user-chip" style="display:none">
         <div class="user-av" id="user-chip-av">?</div>
         <span class="user-name" id="user-chip-name"></span>
@@ -391,7 +392,7 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 </div>
 
 <!-- SETUP OVERLAY -->
-<div id="sover" class="sover hidden">
+<div id="setup-overlay" class="sover hidden">
   <div class="scard">
     <div class="sbanner"><div class="org">Provident Healthcare Consulting</div><h1>UR Intelligence Tracker</h1><div class="sub">Strive Recovery of Fort Wayne &middot; v3.0</div></div>
     <div class="sbody">
@@ -446,6 +447,9 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
         </div>
         <div class="fgr"><label class="lsw">Insurance Type</label>
           <select id="f5" class="fsw"><option value="">Select...</option><option>Medicaid</option><option>Medicare</option><option>Commercial</option></select>
+        </div>
+        <div class="fgr"><label class="lsw">Insurance Product</label>
+          <select id="fip" class="fsw"><option value="">Select...</option><option>HIP</option><option>Hoosier Healthwise</option><option>Hoosier Care Connect</option><option>Medicare Part A</option><option>Medicare Advantage</option><option>Commercial PPO</option><option>Commercial HMO</option><option>Other</option></select>
         </div>
         <div class="fgr"><label class="lsw">Level of Care</label>
           <select id="f6" class="fsw"><option value="">Select...</option><option>Detox (3.7)</option><option>Res 3.5</option><option>Res 3.1</option><option>PHP (2.5)</option><option>IOP (2.1)</option></select>
@@ -529,6 +533,8 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
     <div class="tp" id="t-denial">
       <div class="fg">
         <div class="sdiv" style="color:#f97316;border-bottom-color:#f97316">Denial Classification — Manual Entry Required</div>
+        <div class="fgr"><label class="lme">Denial Date</label><input type="date" id="fdd" class="fme" onchange="updateDenialDeadlines(this.value)"></div>
+        <div class="fgr" id="denial-deadlines-display" style="display:none"><label class="lca">Auto-Calculated Deadlines</label><div id="denial-deadlines-text" style="font-size:11px;padding:7px 9px;background:var(--purple-bg);border-radius:6px;color:var(--purple);font-weight:600;line-height:1.7"></div></div>
         <div class="fgr"><label class="lme">Denial Reason</label>
           <select id="f15" class="fme"><option value="">N/A</option><option>Medical Necessity</option><option>Lack of Clinical Documentation</option><option>Level of Care Not Justified</option><option>Late Submission</option><option>Wrong Procedure Code</option><option>No Authorization on File</option><option>Member Not Eligible</option><option>LOS Exceeded</option><option>Plan Exclusion</option><option>Other Administrative</option></select>
         </div>
@@ -594,7 +600,7 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 </div>
 </div>
 
-<!-- ── MICROSOFT AUTH — MSAL v3 (matches CTM implementation) ── -->
+<!-- ── MICROSOFT AUTH — MSAL v3 ── -->
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"></script>
 <script>if(!window.msal){document.write('<script src="https://unpkg.com/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"><\/script>');}</script>
 <script src="config.js"></script>
@@ -608,7 +614,6 @@ const SP_HOST = 'gshealthcarellc.sharepoint.com';
 const SP_SITE = 'sites/Provident';
 const SP_FILE = 'MASTER_Sunwave_New_PowerQuerry.xlsx';
 
-// Loaded from config.js (injected by GitHub Actions from repo secrets)
 const _clientId = (typeof AZURE_CONFIG !== 'undefined' && AZURE_CONFIG.CLIENT_ID !== 'YOUR_CLIENT_ID_HERE') ? AZURE_CONFIG.CLIENT_ID : '';
 const _tenantId = (typeof AZURE_CONFIG !== 'undefined' && AZURE_CONFIG.TENANT_ID !== 'YOUR_TENANT_ID_HERE') ? AZURE_CONFIG.TENANT_ID : 'common';
 
@@ -634,14 +639,9 @@ window.loginWithMicrosoft = async function() {
   showSpinner(true);
   try {
     const inst = await getInst();
-    // Try silent SSO first
     let resp;
-    try {
-      resp = await inst.ssoSilent({ scopes: SCOPES });
-    } catch(e) {
-      // Silent failed — show popup
-      resp = await inst.loginPopup({ scopes: SCOPES });
-    }
+    try { resp = await inst.ssoSilent({ scopes: SCOPES }); }
+    catch(e) { resp = await inst.loginPopup({ scopes: SCOPES }); }
     const email = (resp.account.username || '').toLowerCase();
     const name  = resp.account.name || email;
     handleAuthResult(email, name);
@@ -672,14 +672,12 @@ window.mountApp = function(email, name) {
   document.getElementById('user-chip-av').textContent = initials;
   document.getElementById('user-chip-name').textContent = chipName + ' (' + (email.split('@')[1]||email) + ')';
   document.getElementById('user-chip').style.display = 'flex';
-  const sel = document.getElementById('qCoord');
+  // Auto-select coordinator dropdown by first name match
+  const sel = document.getElementById('cu');
   if (sel) { for (let i=0;i<sel.options.length;i++) { if(sel.options[i].text.toLowerCase().includes((name||'').split(' ')[0].toLowerCase())){sel.selectedIndex=i;break;} } }
-  // Trigger initial render after login
   if (typeof go === 'function') go('queue');
-  // Restore last sync timestamp in topbar immediately
   const lastTs = parseInt(localStorage.getItem(SYNC_TS_KEY)||'0');
   if (lastTs) updateSyncStatus(lastTs, false);
-  // Pull live Sunwave data from SharePoint in background (non-blocking)
   setTimeout(function(){ if(typeof window._loadSharePointAuto==='function') window._loadSharePointAuto(); }, 800);
 };
 
@@ -701,7 +699,6 @@ function showSpinner(on) {
   if(bt) bt.style.display = on ? 'none' : 'flex';
 }
 
-// On load: restore session or check MSAL redirect
 window.addEventListener('DOMContentLoaded', async function() {
   const saved = sessionStorage.getItem(AUTH_SESSION_KEY);
   if (saved) {
@@ -711,7 +708,6 @@ window.addEventListener('DOMContentLoaded', async function() {
     } catch(e) {}
     sessionStorage.removeItem(AUTH_SESSION_KEY);
   }
-  // Handle redirect response (if popup was blocked and redirect was used)
   try {
     const inst = await getInst();
     const resp = await inst.handleRedirectPromise();
@@ -719,228 +715,117 @@ window.addEventListener('DOMContentLoaded', async function() {
   } catch(e) { console.warn('[MSAL redirect]', e); }
 });
 
-// ── submitEmailFallback kept for completeness but no longer shown ──
-window.submitEmailFallback = function() {
-  var email = (document.getElementById('email-input')||{value:''}).value.trim().toLowerCase();
-  var domain = email.split('@')[1] || '';
-  if (!email || !email.includes('@')) { showLoginError('Please enter a valid email address.'); return; }
-  if (!ALLOWED_DOMAINS.includes(domain)) {
-    showLoginError('Access denied. Only striverecovery.com, providenthcc.com, and gshealthcarellc.com accounts are allowed.');
-    return;
-  }
-  var name = email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
-  handleAuthResult(email, name);
-};
-
-// ── SharePoint / Graph data pull ────────────────────────────────────
+// ── SharePoint / Graph data pull ─────────────────────────────────────
 async function gget(path, token) {
   const r = await fetch('https://graph.microsoft.com/v1.0' + path, {headers:{Authorization:'Bearer '+token}});
   if (!r.ok) throw new Error('Graph ' + r.status + ' ' + path);
   return r.json();
 }
-
 function xDate(v) {
   if (v===null||v===undefined||v==='') return '';
-  if (typeof v==='number') {
-    const d = new Date(Math.round((v-25569)*86400000));
-    return String(d.getUTCMonth()+1).padStart(2,'0')+'/'+String(d.getUTCDate()).padStart(2,'0')+'/'+d.getUTCFullYear();
-  }
+  if (typeof v==='number') { const d=new Date(Math.round((v-25569)*86400000)); return String(d.getUTCMonth()+1).padStart(2,'0')+'/'+String(d.getUTCDate()).padStart(2,'0')+'/'+d.getUTCFullYear(); }
   return String(v).trim();
 }
 function xS(v){ return v==null?'':String(v).trim(); }
 function xN(v){ if(v===null||v===undefined||v==='')return 0; const n=parseFloat(v); return isNaN(n)?0:Math.round(n); }
 
 const SYNC_TS_KEY = 'strive_ur_last_sync';
-const SYNC_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
+const SYNC_INTERVAL_MS = 30 * 60 * 1000;
 let _syncTimer = null;
 
 function fmtSyncTime(ts) {
   if (!ts) return '';
-  const d = new Date(ts);
-  const now = new Date();
-  const diffMin = Math.floor((now - d) / 60000);
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  const timeStr = hh + ':' + mm;
-  if (diffMin < 1)   return 'Synced just now · ' + timeStr;
-  if (diffMin < 60)  return 'Synced ' + diffMin + 'm ago · ' + timeStr;
-  const diffH = Math.floor(diffMin / 60);
-  return 'Synced ' + diffH + 'h ago · ' + timeStr;
+  const d=new Date(ts), now=new Date();
+  const diffMin=Math.floor((now-d)/60000);
+  const hh=String(d.getHours()).padStart(2,'0'), mm=String(d.getMinutes()).padStart(2,'0');
+  const timeStr=hh+':'+mm;
+  if (diffMin<1) return 'Synced just now · '+timeStr;
+  if (diffMin<60) return 'Synced '+diffMin+'m ago · '+timeStr;
+  return 'Synced '+Math.floor(diffMin/60)+'h ago · '+timeStr;
 }
 
 function updateSyncStatus(ts, syncing) {
-  const el = document.getElementById('sync-status');
-  const btn = document.getElementById('sync-btn');
+  const el=document.getElementById('sync-status');
+  const btn=document.getElementById('sync-btn');
   if (!el) return;
-  if (syncing) {
-    el.textContent = '⏳ Syncing…';
-    el.style.color = '#f59e0b';
-    if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
-  } else {
-    el.textContent = fmtSyncTime(ts);
-    el.style.color = 'var(--muted)';
-    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
-  }
+  if (syncing) { el.textContent='⏳ Syncing…'; el.style.color='#f59e0b'; if(btn){btn.disabled=true;btn.style.opacity='0.6';} }
+  else { el.textContent=fmtSyncTime(ts); el.style.color='var(--muted)'; if(btn){btn.disabled=false;btn.style.opacity='1';} }
 }
 
-// Tick the "X min ago" display every minute
-setInterval(function() {
-  const ts = localStorage.getItem(SYNC_TS_KEY);
-  if (ts) updateSyncStatus(parseInt(ts), false);
-}, 60000);
+setInterval(function() { const ts=localStorage.getItem(SYNC_TS_KEY); if(ts) updateSyncStatus(parseInt(ts),false); }, 60000);
 
 function showSyncBanner(msg, color) {
-  // Silent background sync — only show errors, not success/loading
-  if (!color || color === '#1B3A6B' || color === '#10b981') return;
-  let b = document.getElementById('sp-banner');
-  if (!b) {
-    b = document.createElement('div');
-    b.id = 'sp-banner';
-    b.style.cssText = 'position:fixed;bottom:18px;right:18px;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;color:#fff;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.18);transition:opacity .4s';
-    document.body.appendChild(b);
-  }
-  b.textContent = msg;
-  b.style.background = color;
-  b.style.opacity = '1';
-  clearTimeout(b._t);
-  b._t = setTimeout(()=>{ b.style.opacity='0'; }, 5000);
+  if (!color || color==='#1B3A6B' || color==='#10b981') return;
+  let b=document.getElementById('sp-banner');
+  if (!b) { b=document.createElement('div'); b.id='sp-banner'; b.style.cssText='position:fixed;bottom:18px;right:18px;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;color:#fff;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.18);transition:opacity .4s'; document.body.appendChild(b); }
+  b.textContent=msg; b.style.background=color; b.style.opacity='1';
+  clearTimeout(b._t); b._t=setTimeout(()=>{ b.style.opacity='0'; }, 5000);
 }
 
 window.loadSharePointData = async function() {
   try {
     updateSyncStatus(null, true);
-    showSyncBanner('⏳ Syncing Sunwave data from SharePoint…', '#1B3A6B');
-    const inst = await getInst();
+    const inst=await getInst();
     let token;
-    try {
-      const account = inst.getAllAccounts()[0];
-      const r = await inst.acquireTokenSilent({scopes: SP_SCOPES, account});
-      token = r.accessToken;
-    } catch(e) {
-      const r = await inst.acquireTokenPopup({scopes: SP_SCOPES});
-      token = r.accessToken;
-    }
-
-    // Locate the file in SharePoint
-    const site   = await gget('/sites/'+SP_HOST+':/'+SP_SITE, token);
-    const search = await gget('/sites/'+site.id+"/drive/root/search(q='"+encodeURIComponent(SP_FILE)+"')", token);
-    const file   = (search.value||[]).find(f=>f.name===SP_FILE) || (search.value||[])[0];
-    if (!file) { showSyncBanner('⚠️ Sunwave file not found in SharePoint', '#ef4444'); return; }
-
-    // Fetch Report Auth and Census Active sheets
-    const sheetsNeeded = ['Report Auth','Census Active','Census_Discharge'];
-    const sheets = {};
+    try { const account=inst.getAllAccounts()[0]; const r=await inst.acquireTokenSilent({scopes:SP_SCOPES,account}); token=r.accessToken; }
+    catch(e) { const r=await inst.acquireTokenPopup({scopes:SP_SCOPES}); token=r.accessToken; }
+    const site=await gget('/sites/'+SP_HOST+':/'+SP_SITE, token);
+    const search=await gget('/sites/'+site.id+"/drive/root/search(q='"+encodeURIComponent(SP_FILE)+"')", token);
+    const file=(search.value||[]).find(f=>f.name===SP_FILE)||(search.value||[])[0];
+    if (!file) { showSyncBanner('⚠️ Sunwave file not found in SharePoint','#ef4444'); return; }
+    const sheetsNeeded=['Report Auth','Census Active','Census_Discharge'];
+    const sheets={};
     await Promise.all(sheetsNeeded.map(async n => {
-      try {
-        const r = await gget('/sites/'+site.id+'/drive/items/'+file.id+'/workbook/worksheets/'+encodeURIComponent(n)+'/usedRange?$select=values', token);
-        sheets[n] = r.values || [];
-      } catch(e) { sheets[n] = []; }
+      try { const r=await gget('/sites/'+site.id+'/drive/items/'+file.id+'/workbook/worksheets/'+encodeURIComponent(n)+'/usedRange?$select=values',token); sheets[n]=r.values||[]; }
+      catch(e) { sheets[n]=[]; }
     }));
-
-    // Transform Report Auth rows → UR records
-    const authSheet = sheets['Report Auth'] || [];
-    const newRecords = [];
-    if (authSheet.length > 1) {
-      const cols = authSheet[0].map(c => xS(c).toLowerCase().replace(/\s+/g,'_'));
-      const ci = n => cols.indexOf(n);
-      for (let i = 1; i < authSheet.length; i++) {
-        const row = authSheet[i];
-        const authCode = xS(row[ci('authorization_code')]);
-        const mri      = xS(row[ci('mri')]);
-        const admitRaw = row[ci('admission_date')];
-        const admitDate= xDate(admitRaw);
-        if (!mri && !authCode) continue;
-        const id = authCode ? 'sp-'+authCode : 'sp-'+mri+'-'+admitDate.replace(/\//g,'');
-        newRecords.push({
-          id,
-          mri,
-          patientLastName:  xS(row[ci('patient_last_name')])||xS(row[ci('patient_name')]).split(',')[0].trim(),
-          patientFirstName: xS(row[ci('patient_first_name')])||xS(row[ci('patient_name')]).split(',')[1]?.trim()||'',
-          admissionDate:    admitDate,
-          insuranceProvider:xS(row[ci('insurance_provider')]),
-          insuranceType:    xS(row[ci('insurance_type')]),
-          authorizedLevelOfCare: xS(row[ci('authorized_level_of_care')])||xS(row[ci('service_name')]),
-          authCode,
-          authPeriod:       xS(row[ci('auth_period')])||'Initial PA',
-          authStart:        xDate(row[ci('authorization_start')]),
-          authEnd:          xDate(row[ci('authorization_end')])||xDate(row[ci('next_review_date')]),
-          daysAuthorized:   xN(row[ci('authorized_units')]),
-          daysRequested:    xN(row[ci('authorized_units')]),
-          dischargeDate:    xDate(row[ci('discharge_date')]),
-          dischargeType:    xS(row[ci('discharge_type')]),
-          coordinator:      xS(row[ci('ur_reviewer')]),
-          decision:         'Pending',
-          currentStage:     'Awaiting Decision',
-          currentOwner:     xS(row[ci('ur_reviewer')])||'UR Coordinator',
-          department:       'UR',
-          priority:         'Normal',
-          tasks:            [],
-          isTest:           false,
-          source:           'sharepoint',
-          createdAt:        new Date().toISOString(),
-          updatedAt:        new Date().toISOString(),
-        });
+    const authSheet=sheets['Report Auth']||[];
+    const newRecords=[];
+    if (authSheet.length>1) {
+      const cols=authSheet[0].map(c=>xS(c).toLowerCase().replace(/\s+/g,'_'));
+      const ci=n=>cols.indexOf(n);
+      for (let i=1;i<authSheet.length;i++) {
+        const row=authSheet[i];
+        const authCode=xS(row[ci('authorization_code')]);
+        const mri=xS(row[ci('mri')]);
+        const admitDate=xDate(row[ci('admission_date')]);
+        if (!mri&&!authCode) continue;
+        const id=authCode?'sp-'+authCode:'sp-'+mri+'-'+admitDate.replace(/\//g,'');
+        newRecords.push({id,mri,last:xS(row[ci('patient_last_name')])||xS(row[ci('patient_name')]).split(',')[0].trim(),first:xS(row[ci('patient_first_name')])||xS(row[ci('patient_name')]).split(',')[1]?.trim()||'',admit:admitDate,payer:xS(row[ci('insurance_provider')]),insType:xS(row[ci('insurance_type')]),loc:xS(row[ci('authorized_level_of_care')])||xS(row[ci('service_name')]),authCode,authPeriod:xS(row[ci('auth_period')])||'Initial PA',authStart:xDate(row[ci('authorization_start')]),authEnd:xDate(row[ci('authorization_end')])||xDate(row[ci('next_review_date')]),daysAuth:xN(row[ci('authorized_units')]),daysReq:xN(row[ci('authorized_units')]),discharge:xDate(row[ci('discharge_date')]),dischargeType:xS(row[ci('discharge_type')]),coordinator:xS(row[ci('ur_reviewer')]),owner:xS(row[ci('ur_reviewer')])||'UR Coordinator',decision:'Pending',stage:'submitted-awaiting-decision',dept:'UR',tasks:[],isTest:false,source:'sharepoint'});
       }
     }
-
-    // Merge: keep all TEST records + manual entries, replace/add SharePoint records
-    // Load current data
-    let existing = [];
-    try { existing = JSON.parse(localStorage.getItem('strive_ur_v6')) || []; } catch(e) {}
-
-    // Index existing records by id for fast lookup
-    const existingById = {};
-    existing.forEach(r => { existingById[r.id] = r; });
-
-    const merged = [];
-    // Keep all TEST and manually-created records untouched
-    existing.forEach(r => {
-      if (r.isTest || r.source !== 'sharepoint') merged.push(r);
+    let existing=[];
+    try { existing=JSON.parse(localStorage.getItem('strive_ur_v6'))||[]; } catch(e) {}
+    const existingById={};
+    existing.forEach(r=>{existingById[r.id]=r;});
+    const merged=[];
+    existing.forEach(r=>{if(r.isTest||r.source!=='sharepoint')merged.push(r);});
+    const MANUAL_FIELDS=['decision','denialReason','avoidable','denialSub','appealFiled','appealOutcome','owner','dept','stage','priority','wfNotes','tasks','submitDate','authReceived','daysReq','notes'];
+    newRecords.forEach(nr=>{
+      const old=existingById[nr.id];
+      if (old) { const updated=Object.assign({},nr); MANUAL_FIELDS.forEach(f=>{if(old[f]!==undefined)updated[f]=old[f];}); merged.push(updated); }
+      else { merged.push(nr); }
     });
-    // Add/update SharePoint records — preserve manual fields if record exists
-    const MANUAL_FIELDS = ['decision','denialReason','avoidable','denialSub','appealFiled','appealOutcome',
-      'currentOwner','department','currentStage','priority','handoffNotes','tasks','paSubmissionDate','dateAuthReceived','daysRequested'];
-    newRecords.forEach(nr => {
-      const old = existingById[nr.id];
-      if (old) {
-        // Update Sunwave fields, preserve manual work
-        const updated = Object.assign({}, nr);
-        MANUAL_FIELDS.forEach(f => { if (old[f] !== undefined) updated[f] = old[f]; });
-        updated.updatedAt = new Date().toISOString();
-        merged.push(updated);
-      } else {
-        merged.push(nr);
-      }
-    });
-
-    localStorage.setItem('strive_ur_v6', JSON.stringify(merged));
-
-    // Refresh the current view
-    if (typeof load === 'function') load();
-    if (typeof go === 'function' && typeof cv !== 'undefined') go(cv);
-
-    const now = Date.now();
-    localStorage.setItem(SYNC_TS_KEY, now);
-    updateSyncStatus(now, false);
-    showSyncBanner('✅ Synced ' + newRecords.length + ' records from Sunwave SharePoint', '#10b981');
-    console.log('[SharePoint] merged', newRecords.length, 'records,', merged.length, 'total');
-
-    // Schedule next auto-refresh in 30 minutes
+    localStorage.setItem('strive_ur_v6',JSON.stringify(merged));
+    if (typeof load==='function') load();
+    if (typeof go==='function'&&typeof cv!=='undefined') go(cv);
+    const now=Date.now();
+    localStorage.setItem(SYNC_TS_KEY,now);
+    updateSyncStatus(now,false);
+    console.log('[SharePoint] merged',newRecords.length,'records,',merged.length,'total');
     clearTimeout(_syncTimer);
-    _syncTimer = setTimeout(function(){ window.loadSharePointData(); }, SYNC_INTERVAL_MS);
-
+    _syncTimer=setTimeout(function(){window.loadSharePointData();},SYNC_INTERVAL_MS);
   } catch(err) {
-    console.error('[SharePoint]', err);
-    updateSyncStatus(parseInt(localStorage.getItem(SYNC_TS_KEY)||'0')||null, false);
-    showSyncBanner('⚠️ SharePoint sync failed: ' + (err.message||'unknown'), '#ef4444');
-    // Retry in 5 minutes on failure
+    console.error('[SharePoint]',err);
+    updateSyncStatus(parseInt(localStorage.getItem(SYNC_TS_KEY)||'0')||null,false);
+    showSyncBanner('⚠️ SharePoint sync failed: '+(err.message||'unknown'),'#ef4444');
     clearTimeout(_syncTimer);
-    _syncTimer = setTimeout(function(){ window.loadSharePointData(); }, 5 * 60 * 1000);
+    _syncTimer=setTimeout(function(){window.loadSharePointData();},5*60*1000);
   }
 };
 
 window._loadSharePointAuto = async function() {
-  if (!window.msal) { setTimeout(window._loadSharePointAuto, 400); return; }
+  if (!window.msal) { setTimeout(window._loadSharePointAuto,400); return; }
   await window.loadSharePointData();
 };
 
@@ -1309,7 +1194,7 @@ function go(v){
     appeals:['Appeals','Peer-to-peer and formal appeal outcomes'],
     writeoffs:['Write-Offs','Revenue leakage and root cause analysis'],
     staff:['Staff Performance','Per-coordinator scorecards and productivity'],
-    settings:['Settings','Import, export, and manage data'],
+    settings:['Settings','Data management, export, and cadence configuration'],
     alltasks:['All Tasks','Every open and completed task across all records — sortable and filterable'],
     kpidash:['KPI Dashboard','All 13 performance metrics — MTD, YTD, trend, status, and delta to target']
   };
@@ -1348,14 +1233,15 @@ function rQueue(c){
   var mine=R.filter(function(r){return !String(r.stage||'').startsWith('closed');});
   if(u)mine=mine.filter(function(r){return r.owner===u;});
   mine=applyQ(mine);
-  mine.forEach(function(r){r._nt=getNextTask(r);});
+  mine.forEach(function(r){r._nt=getNextTaskEnhanced(r);r._urg=getUrgency(r);});
   mine.sort(function(a,b){
+    var ua=a._urg&&a._urg.days!==null?a._urg.days:999;
+    var ub=b._urg&&b._urg.days!==null?b._urg.days:999;
+    if(ua!==ub)return ua-ub;
     var po={urgent:0,high:1,normal:2,low:3,'':4};
-    var pa=po[a._nt&&a._nt.priority||a.priority||'']||4;
-    var pb=po[b._nt&&b._nt.priority||b.priority||'']||4;
-    if(pa!==pb)return pa-pb;
-    var da=(a._nt&&a._nt.due)||'9999',db=(b._nt&&b._nt.due)||'9999';
-    return da.localeCompare(db);
+    var pa=po[a._nt&&a._nt.priority||'']||4;
+    var pb=po[b._nt&&b._nt.priority||'']||4;
+    return pa-pb;
   });
   var now0=new Date();now0.setHours(0,0,0,0);
   var ov=mine.filter(function(r){var nt=r._nt;return nt&&nt.due&&new Date(nt.due)<now0;}).length;
@@ -1368,7 +1254,7 @@ function rQueue(c){
       +'<td><span class="badge bb">'+(r.loc||'--')+'</span></td>'
       +'<td><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:'+st.bg+';color:'+st.fg+'">'+st.label+'</span></td>'
       +'<td style="max-width:210px"><div style="font-size:11px;font-weight:600">'+(nt?pdot(nt.priority)+nt.desc.slice(0,60)+(nt.desc.length>60?'&hellip;':''):'<span style="color:var(--muted)">No task set</span>')+'</div></td>'
-      +'<td><span class="cdue '+sc+'" style="font-size:11px">'+(dlbl(nt&&nt.due||'')||'<span style="color:var(--muted)">--</span>')+'</span></td>'
+      +'<td>'+urgPill(r)+'</td>'
       +'<td><div style="display:flex;align-items:center;gap:4px"><div class="av '+avCls(r.owner)+'">'+avInit(r.owner)+'</div><span style="font-size:11px">'+(r.owner||'--')+'</span></div></td>'
       +'</tr>';
   }).join('');
@@ -1751,7 +1637,27 @@ function rStaff(c){
 
 // ── SETTINGS ───────────────────────────────────────────────────────────────
 function rSettings(c){
-  c.innerHTML='<div style="max-width:540px">'
+  var sTab=window._sTab||'data';
+  var tabBar='<div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px">'
+    +['data','export','cadence'].map(function(t){
+      var lbl={data:'Data Management',export:'Export / Backup',cadence:'&#9881; Cadence Config'}[t];
+      return '<div onclick="window._sTab=\''+t+'\';go(\'settings\')" style="padding:9px 14px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid '+(sTab===t?'var(--sky)':'transparent')+';color:'+(sTab===t?'var(--navy)':'var(--muted)')+';margin-bottom:-1px">'+lbl+'</div>';
+    }).join('')+'</div>';
+
+  if(sTab==='cadence'){c.innerHTML='<div style="max-width:820px">'+tabBar+rCadenceSettings()+'</div>';return;}
+
+  if(sTab==='export'){
+    c.innerHTML='<div style="max-width:540px">'+tabBar
+      +'<div class="tw"><div class="th"><h3>Export / Backup</h3></div>'
+      +'<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">'
+      +'<button class="btn btn-ghost" onclick="exportJSON()">&#8595; Download Full JSON Backup</button>'
+      +'<button class="btn btn-ghost" onclick="xCSV(R,&quot;strive-ur-all-records&quot;)">&#8595; Download All Records (CSV)</button>'
+      +'<button class="btn btn-ghost" onclick="xXLS(R,&quot;strive-ur-all-records&quot;)">&#8595; Download All Records (Excel)</button>'
+      +'</div></div></div>';
+    return;
+  }
+
+  c.innerHTML='<div style="max-width:540px">'+tabBar
     +'<div class="tw" style="margin-bottom:12px"><div class="th"><h3>Data Management</h3></div>'
     +'<div style="padding:16px 18px;display:flex;flex-direction:column;gap:14px">'
     +'<div><div style="font-weight:700;color:var(--orange);margin-bottom:4px;font-size:13px">Delete TEST Records</div>'
@@ -1759,13 +1665,7 @@ function rSettings(c){
     +'<button class="btn btn-ghost btn-sm" style="color:var(--orange);border-color:var(--orange)" onclick="delTestRecs()">&#128465; Delete All TEST Records</button></div>'
     +'<div style="border-top:1px solid var(--border);padding-top:14px"><div style="font-weight:700;color:var(--red);margin-bottom:4px;font-size:13px">Clear All Records</div>'
     +'<div style="font-size:12px;color:var(--muted);margin-bottom:9px">Wipe all data from localStorage. Cannot be undone.</div>'
-    +'<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="if(confirm(\'Delete ALL records? Cannot be undone.\')){R=[];persist();go(\'queue\');}">&#9888; Clear All Data</button></div>'
-    +'</div></div>'
-    +'<div class="tw"><div class="th"><h3>Export / Backup</h3></div>'
-    +'<div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">'
-    +'<button class="btn btn-ghost" onclick="exportJSON()">&#8595; Download Full JSON Backup</button>'
-    +'<button class="btn btn-ghost" onclick="xCSV(R,\'strive-ur-all-records\')">&#8595; Download All Records (CSV)</button>'
-    +'<button class="btn btn-ghost" onclick="xXLS(R,\'strive-ur-all-records\')">&#8595; Download All Records (Excel)</button>'
+    +'<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="if(confirm(&quot;Delete ALL records? Cannot be undone.&quot;)){R=[];persist();go(&quot;queue&quot;);}">&#9888; Clear All Data</button></div>'
     +'</div></div></div>';
 }
 
@@ -1785,7 +1685,7 @@ function mTab(id){
   else if(id==='t-guide')renderGuideTab();
   else if(id==='t-auth')updateCalcs();
 }
-var FMAP={mri:'f0',last:'f1',first:'f2',admit:'f3',payer:'f4',insType:'f5',loc:'f6',authCode:'f7',authPeriod:'f8b',authStart:'f8',authEnd:'f9',daysAuth:'f10',daysReq:'f11',submitDate:'f12',authReceived:'f13',decision:'f14',denialReason:'f15',avoidable:'f16',denialSub:'f17',appealFiled:'f18',appealOutcome:'f19',coordinator:'f20',discharge:'f21',dischargeType:'f22',notes:'f23'};
+var FMAP={mri:'f0',last:'f1',first:'f2',admit:'f3',payer:'f4',insType:'f5',loc:'f6',authCode:'f7',authPeriod:'f8b',authStart:'f8',authEnd:'f9',daysAuth:'f10',daysReq:'f11',submitDate:'f12',authReceived:'f13',decision:'f14',denialReason:'f15',avoidable:'f16',denialSub:'f17',appealFiled:'f18',appealOutcome:'f19',coordinator:'f20',discharge:'f21',dischargeType:'f22',notes:'f23',denialDate:'fdd',insProduct:'fip'};
 function openAdd(){
   eid=null;editingTasks=[];
   document.getElementById('mtitle').textContent='Add Authorization Record';
@@ -2048,9 +1948,14 @@ document.addEventListener('DOMContentLoaded',()=>{
 // ── FIRST LAUNCH SETUP ───────────────────────────────────────────────────
 const SETUP_KEY='strive_ur_setup_v6';
 
-function checkFirstLaunch(){
+function checkFirstLaunch(isFirstEver){
   if(!localStorage.getItem(SETUP_KEY)){
-    document.getElementById('setup-overlay').classList.remove('hidden');
+    if(isFirstEver){
+      document.getElementById('setup-overlay').classList.remove('hidden');
+    } else {
+      // Returning user on new version — skip overlay, mark setup done
+      localStorage.setItem(SETUP_KEY,'returning');
+    }
   }
 }
 
@@ -2153,7 +2058,7 @@ function showSettings(){
           <strong style="color:var(--navy)">UR Intelligence Tracker v2.0</strong><br>
           Strive Recovery of Fort Wayne &nbsp;&middot;&nbsp; Provident Healthcare Consulting<br><br>
           Data is stored in this browser&apos;s localStorage &mdash; private to this device. For multi-device access, export JSON and re-import, or contact Provident to set up shared cloud storage.<br><br>
-          <strong style="color:var(--navy)">GitHub:</strong> providentanalytics.github.io/strive-ur
+          <strong style="color:var(--navy)">GitHub:</strong> provident-hcc.github.io/strive-ur
         </div>
       </div>
     </div>`;
@@ -3046,7 +2951,291 @@ function showKPILegend(){
   alert('STATUS INDICATORS\n\n● Filled green = On Target (meeting or exceeding goal)\n◑ Half-filled yellow = Needs Review (within warning threshold, approaching target boundary)\n● Filled red = Off Target (beyond warning threshold, action required)\n○ Empty gray = Data Pending (no data available for this period)\n\nΔ TO TARGET\nShows the difference between current value and target.\n+ means above target; - means below target.\nFor "lower is better" metrics (like denial rate): + is bad (above target = too high).\nFor "higher is better" metrics (like appeal rate): + is good (above target = exceeding goal).\n\n3-PERIOD TREND\nThree dots showing 90-day ago, 60-day ago, and 30-day performance.\nGreen = on target for that period. Yellow = review. Red = off target.\nLeft to right = oldest to most recent.');
 }
 
-load();persist();checkFirstLaunch();go('queue');
+// ═══════════════════════════════════════════════════════════════════════
+// CADENCE ENGINE — Auto-derived due dates, urgency bands, and tasks
+// Dan's contribution: merged into Strive UR Tracker v3.1
+// ═══════════════════════════════════════════════════════════════════════
+
+var CADENCE_STORE='strive_cadence_v1';
+var AUTO_DONE_STORE='strive_auto_done_v1';
+var CADENCE_COLS=[['interval','Review Interval'],['submitBuffer','Submit Buffer'],['remindAhead','Remind Ahead'],['p2p','P2P Window'],['appeal','Appeal Window'],['initialSLA','Initial SLA']];
+var CADENCE_PAYERS=['Anthem BCBS IN MCD','CARESOURCE IN MCD','Indiana Managed Health Services','MDwise','FFS (Acentra)','Medicare Advantage','UnitedHealthcare','Aetna','Other Commercial'];
+
+// MHS 3.5 = default for any unknown/new payer pair (tightest SLA = safest net)
+var MHS35={interval:5,submitBuffer:1,remindAhead:2,p2p:2,appeal:33,initialSLA:1};
+
+function defaultCadence(){
+  return{
+    'Res 3.5':{
+      'Anthem BCBS IN MCD':              {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+      'CARESOURCE IN MCD':               {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:33,initialSLA:1},
+      'Indiana Managed Health Services': {interval:5, submitBuffer:1,remindAhead:2,p2p:2,appeal:33,initialSLA:1},
+      'MDwise':                          {interval:5, submitBuffer:1,remindAhead:2,p2p:2,appeal:33,initialSLA:1},
+      'FFS (Acentra)':                   {interval:14,submitBuffer:1,remindAhead:2,p2p:1,appeal:60,initialSLA:1},
+      'Medicare Advantage':              {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:60,initialSLA:1},
+      'UnitedHealthcare':                {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:60,initialSLA:1},
+      'Aetna':                           {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:60,initialSLA:1},
+      'Other Commercial':                {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:60,initialSLA:1},
+    },
+    'Res 3.1':{
+      'Anthem BCBS IN MCD':              {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:30,initialSLA:2},
+      'CARESOURCE IN MCD':               {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:33,initialSLA:2},
+      'Indiana Managed Health Services': {interval:21,submitBuffer:2,remindAhead:3,p2p:2,appeal:33,initialSLA:2},
+      'MDwise':                          {interval:21,submitBuffer:2,remindAhead:3,p2p:2,appeal:33,initialSLA:2},
+      'FFS (Acentra)':                   {interval:21,submitBuffer:2,remindAhead:3,p2p:1,appeal:60,initialSLA:2},
+      'Medicare Advantage':              {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:60,initialSLA:2},
+      'UnitedHealthcare':                {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:60,initialSLA:2},
+      'Aetna':                           {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:60,initialSLA:2},
+      'Other Commercial':                {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:60,initialSLA:2},
+    },
+  };
+}
+function loadCadence(){try{return JSON.parse(localStorage.getItem(CADENCE_STORE))||defaultCadence();}catch(e){return defaultCadence();}}
+function saveCadence(c){localStorage.setItem(CADENCE_STORE,JSON.stringify(c));}
+
+function getC(record){
+  var cad=loadCadence();
+  var loc=record.loc||'';
+  var payer=record.payer||'';
+  var lvl=loc.includes('3.5')?'Res 3.5':'Res 3.1';
+  if(cad[lvl]&&cad[lvl][payer])return cad[lvl][payer];
+  return Object.assign({},MHS35);
+}
+
+function cAddDays(dateStr,n){var d=new Date(dateStr);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function cDaysFrom(dateStr){if(!dateStr)return null;var d=new Date(dateStr),n=new Date();n.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.round((d-n)/86400000);}
+
+function deriveDates(record){
+  var c=getC(record);
+  var out={reviewDue:null,p2pDue:null,appealDue:null,cfg:c};
+  if(record.admit&&!record.authEnd&&!record.authCode){
+    out.reviewDue=cAddDays(record.admit,c.initialSLA);
+  }
+  if(record.authEnd){
+    out.reviewDue=cAddDays(record.authEnd,-c.submitBuffer);
+  }
+  if(record.denialDate){
+    out.p2pDue=cAddDays(record.denialDate,c.p2p);
+    out.appealDue=cAddDays(record.denialDate,c.appeal);
+  }
+  return out;
+}
+
+function getUrgency(record){
+  var stage=record.stage||'';
+  if(stage.startsWith('closed'))return{days:null,label:'Closed',color:'#94a3b8',cls:'dk'};
+  var dates=deriveDates(record);
+  var c=dates.cfg;
+  var primaryDue=null;
+  if(record.denialDate&&(stage==='denied-p2p-needed'||stage==='p2p-scheduled'||stage==='p2p-pending-outcome')){
+    primaryDue=dates.p2pDue;
+  }else if(stage.includes('appeal')){
+    primaryDue=dates.appealDue;
+  }else{
+    primaryDue=dates.reviewDue;
+  }
+  if(!primaryDue)return{days:null,label:'—',color:'#94a3b8',cls:'dk'};
+  var days=cDaysFrom(primaryDue);
+  if(days===null)return{days:null,label:'—',color:'#94a3b8',cls:'dk'};
+  var ra=c.remindAhead||2;
+  if(days<0)return{days,label:Math.abs(days)+'d overdue',color:'#dc2626',cls:'do'};
+  if(days===0)return{days,label:'Due today',color:'#dc2626',cls:'dt'};
+  if(days<=ra)return{days,label:'Due in '+days+'d',color:'#d97706',cls:'ds'};
+  if(days<=ra+2)return{days,label:'Due in '+days+'d',color:'#ca8a04',cls:'ds'};
+  return{days,label:'Due '+days+'d',color:'#16a34a',cls:'dk'};
+}
+
+// Auto-task completion tracking (separate from manual tasks)
+function loadAutoDone(){try{return JSON.parse(localStorage.getItem(AUTO_DONE_STORE))||{};}catch(e){return {};}}
+function saveAutoDone(d){localStorage.setItem(AUTO_DONE_STORE,JSON.stringify(d));}
+function isAutoDone(key){return !!(loadAutoDone()[key]);}
+function markAutoDone(key){var d=loadAutoDone();d[key]=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});saveAutoDone(d);}
+
+function getAutoTasks(record){
+  var stage=record.stage||'';
+  if(stage.startsWith('closed'))return[];
+  var dates=deriveDates(record);
+  var c=dates.cfg;
+  var sp=(record.payer||'').replace('Indiana Managed Health Services','MHS').replace('CARESOURCE IN MCD','CareSource').replace('Anthem BCBS IN MCD','Anthem');
+  var today=new Date().toISOString().slice(0,10);
+  var tasks=[];
+
+  if(record.admit&&!record.authCode&&dates.reviewDue){
+    var k=record.id+'_init';
+    var d=cDaysFrom(dates.reviewDue);
+    tasks.push({id:k,auto:true,done:isAutoDone(k),
+      desc:'Submit initial authorization to '+sp,
+      due:dates.reviewDue,owner:record.owner||'',
+      priority:d<=0?'urgent':'high',
+      createdAt:record.admit,completedAt:loadAutoDone()[k]||null});
+  }
+  if(record.authEnd&&!stage.includes('denied')&&!stage.includes('appeal')&&dates.reviewDue){
+    var k2=record.id+'_cr';
+    var d2=cDaysFrom(dates.reviewDue);
+    tasks.push({id:k2,auto:true,done:isAutoDone(k2),
+      desc:'Submit concurrent review to '+sp+' (auth expires '+record.authEnd+')',
+      due:dates.reviewDue,owner:record.owner||'',
+      priority:d2<=0?'urgent':d2<=c.remindAhead?'high':'normal',
+      createdAt:today,completedAt:loadAutoDone()[k2]||null});
+  }
+  if(record.denialDate&&dates.p2pDue){
+    var k3=record.id+'_p2p';
+    tasks.push({id:k3,auto:true,done:isAutoDone(k3),
+      desc:'Request peer-to-peer with '+sp+' medical director',
+      due:dates.p2pDue,owner:record.owner||'',priority:'urgent',
+      createdAt:record.denialDate,completedAt:loadAutoDone()[k3]||null});
+  }
+  if(record.denialDate&&dates.appealDue){
+    var k4=record.id+'_appeal';
+    var d4=cDaysFrom(dates.appealDue);
+    tasks.push({id:k4,auto:true,done:isAutoDone(k4),
+      desc:'File Level 1 appeal with '+sp+' (if P2P unsuccessful)',
+      due:dates.appealDue,owner:record.owner||'',
+      priority:d4<=5?'high':'normal',
+      createdAt:record.denialDate,completedAt:loadAutoDone()[k4]||null});
+  }
+  return tasks;
+}
+
+function getAllTasks(record){
+  return getAutoTasks(record).concat(record.tasks||[]);
+}
+
+function getNextTaskEnhanced(record){
+  var all=getAllTasks(record);
+  var open=all.filter(function(t){return !t.done;});
+  if(!open.length)return null;
+  var po={urgent:0,high:1,normal:2,low:3,'':4};
+  return open.sort(function(a,b){
+    var pd=(po[a.priority||'']||4)-(po[b.priority||'']||4);
+    if(pd!==0)return pd;
+    if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return -1;
+    return new Date(a.due)-new Date(b.due);
+  })[0];
+}
+
+function toggleAutoTask(taskId,recordId){
+  if(isAutoDone(taskId)){
+    var d=loadAutoDone();delete d[taskId];saveAutoDone(d);
+  }else{
+    markAutoDone(taskId);
+  }
+  if(currentView==='queue'||currentView==='kanban')go(currentView);
+  renderTasksTab();
+}
+
+// ── URGENCY COLOR BAND CSS injection ──────────────────────────────────────
+(function injectUrgencyCSS(){
+  var s=document.createElement('style');
+  s.textContent='.urg-band{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}'
+    +'.urg-red{background:#fee2e2;color:#dc2626}'
+    +'.urg-amber{background:#fef3c7;color:#d97706}'
+    +'.urg-green{background:#dcfce7;color:#16a34a}'
+    +'.urg-gray{background:#f1f5f9;color:#94a3b8}'
+    +'.auto-task-badge{display:inline-block;padding:1px 5px;border-radius:6px;font-size:9px;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:4px}'
+    +'.cadence-input{width:52px;text-align:center;font-size:13px;font-weight:700;padding:5px 4px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-family:inherit}'
+    +'.cadence-input:focus{border-color:var(--sky);outline:none}'
+    +'.cadence-flash{background:var(--green-bg)!important;border-color:var(--green)!important}';
+  document.head.appendChild(s);
+})();
+
+// ── URGENCY PILL HELPER ───────────────────────────────────────────────────
+function urgPill(record){
+  var u=getUrgency(record);
+  if(!u.days&&u.days!==0)return'<span class="urg-band urg-gray">'+u.label+'</span>';
+  var cls=u.days<=0?'urg-red':u.cls==='ds'?'urg-amber':'urg-green';
+  return'<span class="urg-band '+cls+'">'+u.label+'</span>';
+}
+
+// ── CADENCE SETTINGS RENDERER ─────────────────────────────────────────────
+function rCadenceSettings(){
+  var cad=loadCadence();
+  var levels=['Res 3.5','Res 3.1'];
+  var h='<div style="background:var(--yellow-bg);border:1px solid #fcd34d;border-radius:9px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e">'
+    +'<strong>&#9888; Confirm all values against each MCE\'s UM/Provider Manual before go-live.</strong> '
+    +'Changing any value here instantly recalculates every due date, urgency color, and auto-task across all active records.</div>'
+    +'<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 13px;margin-bottom:14px;font-size:11px;color:var(--muted)">'
+    +'<strong style="color:var(--navy)">Default for unknown payers:</strong> MHS 3.5 values (highlighted in yellow) — the tightest SLA in the table. '
+    +'When Sunwave imports a new payer not listed here, it gets these conservative defaults immediately. '
+    +'The UR Director should confirm and update the correct values before go-live.</div>';
+
+  levels.forEach(function(lvl){
+    h+='<div class="tw" style="margin-bottom:14px"><div class="th"><h3>'+lvl+' Cadence</h3>'
+      +'<span style="font-size:10px;color:var(--muted);margin-left:auto">All values in days</span></div>'
+      +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#f8fafc">'
+      +'<th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border)">MCE / Payer</th>';
+    CADENCE_COLS.forEach(function(col){
+      h+='<th style="padding:7px 9px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap">'+col[1]+'</th>';
+    });
+    h+='</tr></thead><tbody>';
+    CADENCE_PAYERS.forEach(function(payer,pi){
+      var cfg=(cad[lvl]&&cad[lvl][payer])||Object.assign({},MHS35);
+      var isNew=!(cad[lvl]&&cad[lvl][payer]);
+      var rowBg=pi%2===0?'var(--bg)':'#fff';
+      var ps=payer.replace('Indiana Managed Health Services','MHS IN').replace('CARESOURCE IN MCD','CareSource').replace('Anthem BCBS IN MCD','Anthem');
+      h+='<tr style="background:'+rowBg+'">'
+        +'<td style="padding:8px 12px;font-size:12px;font-weight:700;color:var(--navy)">'
+        +(isNew?'<span style="font-size:9px;font-weight:700;background:var(--yellow-bg);color:var(--yellow);padding:1px 5px;border-radius:5px;margin-right:5px">DEFAULT</span>':'')
+        +ps+'</td>';
+      CADENCE_COLS.forEach(function(col){
+        var key=col[0];
+        var val=cfg[key];
+        var isUrgent=(key==='interval'&&val<=5)||(key==='initialSLA'&&val<=1)||(key==='p2p'&&val<=1);
+        var inputBg=isNew?'var(--yellow-bg)':'var(--bg)';
+        h+='<td style="padding:5px 7px;text-align:center">'
+          +'<input type="number" min="0" max="365" value="'+val+'" '
+          +'class="cadence-input" id="ci_'+lvl.replace(/\s/g,'_')+'_'+payer.replace(/\s/g,'_')+'_'+key+'" '
+          +'data-lvl="'+lvl+'" data-payer="'+payer+'" data-key="'+key+'" '
+          +'onchange="cadenceChange(this)" '
+          +'style="color:'+(isUrgent?'var(--red)':'var(--navy)')+';background:'+inputBg+'">'
+          +'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div></div>';
+  });
+  h+='<div style="font-size:10px;color:var(--muted);margin-top:4px">&#9888; Yellow = using MHS 3.5 defaults — confirm values before go-live &nbsp;&bull;&nbsp; Red numbers = tightest intervals (highest coordinator workload)</div>';
+  return h;
+}
+
+function cadenceChange(el){
+  var val=Math.max(0,parseInt(el.value)||0);
+  el.value=val;
+  var cad=loadCadence();
+  var lvl=el.dataset.lvl,payer=el.dataset.payer,key=el.dataset.key;
+  if(!cad[lvl])cad[lvl]={};
+  if(!cad[lvl][payer])cad[lvl][payer]=Object.assign({},MHS35);
+  cad[lvl][payer][key]=val;
+  saveCadence(cad);
+  el.classList.add('cadence-flash');
+  setTimeout(function(){el.classList.remove('cadence-flash');el.style.background='var(--bg)';},700);
+}
+
+function resetCadence(){
+  if(!confirm('Reset all cadence values to defaults? This cannot be undone.'))return;
+  saveCadence(defaultCadence());
+  go('settings');
+}
+
+function updateDenialDeadlines(denialDateVal){
+  var el=document.getElementById('denial-deadlines-display');
+  var txt=document.getElementById('denial-deadlines-text');
+  if(!el||!txt)return;
+  if(!denialDateVal){el.style.display='none';return;}
+  // Get current record's payer/loc for cadence lookup
+  var payer=document.getElementById('f4')&&document.getElementById('f4').value||'';
+  var loc=document.getElementById('f6')&&document.getElementById('f6').value||'';
+  var tmpR={payer:payer,loc:loc,denialDate:denialDateVal,authEnd:null,admit:null,authCode:null};
+  var dates=deriveDates(tmpR);
+  el.style.display='block';
+  txt.innerHTML='P2P deadline: <strong>'+dates.p2pDue+'</strong> &nbsp;&bull;&nbsp; Appeal deadline: <strong>'+dates.appealDue+'</strong>';
+}
+
+load();
+var _isFirstEver=!localStorage.getItem(KEY);
+persist();
+checkFirstLaunch(_isFirstEver);
+go('queue');
 </script>
 </body>
 </html>

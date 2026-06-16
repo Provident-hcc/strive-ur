@@ -1,8 +1,4 @@
-// This file is auto-generated at deploy time by GitHub Actions. Updated: 2026-06-09 v2
-// Set AZURE_CLIENT_ID and AZURE_TENANT_ID under:
-// GitHub → strive-ur repo → Settings → Secrets and variables → Actions → Variables tab
 const AZURE_CONFIG = {
-  CLIENT_ID: 'YOUR_CLIENT_ID_HERE',
-  TENANT_ID: 'YOUR_TENANT_ID_HERE',
+  CLIENT_ID: 'debd63be-2397-4d6e-adb1-381574e7352b',
+  TENANT_ID: '063ab74f-56d1-429a-b96d-a24a572025de',
 };
-
