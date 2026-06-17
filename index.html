@@ -271,6 +271,100 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
 .pri-low{background:#f1f5f9;color:var(--muted)}
 
 .hidden{display:none !important}
+/* ── REVIEWDESK CSS (merged from simple.html) ── */
+/* Facility filter buttons */
+.fac-btn{display:block;width:100%;text-align:left;padding:6px 12px;border-radius:7px;border:none;background:transparent;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;font-family:inherit;transition:all .12s}
+.fac-btn:hover,.fac-btn.on{background:rgba(255,255,255,.12);color:#fff}
+/* Stats cards */
+.rd-sc{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:9px 16px;min-width:88px}
+.rd-sn{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1}
+.rd-sl{font-size:11.5px;color:var(--muted);margin-top:3px;font-weight:600}
+.rd-stats{display:flex;gap:10px;padding:10px 18px;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+/* Segmented controls */
+.rd-seg{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:3px}
+.rd-segl{font-size:11px;color:var(--muted);font-weight:700;padding:0 8px;text-transform:uppercase;letter-spacing:.5px}
+.rd-segb{padding:5px 11px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);font-family:inherit;transition:all .12s}
+.rd-segb.on{background:var(--navy);color:#fff}
+.rd-segb:hover:not(.on){background:rgba(0,0,0,.05)}
+.rd-togb{padding:7px 12px;border-radius:9px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .12s}
+.rd-togb:hover{border-color:var(--sky);color:var(--sky)}
+.rd-togb.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+/* Filter bar */
+.rd-fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+/* Episode cards */
+.epc{display:grid;grid-template-columns:6px 1fr;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px;cursor:pointer;width:100%;font-family:inherit;text-align:left;transition:box-shadow .12s}
+.epc:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.epb{padding:11px 14px}
+.epr1{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.epr2{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.epr3{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.epmrn{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text)}
+.epfac{font-size:12.5px;color:var(--muted);font-weight:600}
+/* Level badges */
+.lv35{font-family:var(--mono);font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
+.lv31{font-family:var(--mono);font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:#f1f5f9;color:var(--muted);border:1px solid var(--border)}
+/* Status pills */
+.rd-sp{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}
+.rd-sauth{background:var(--green-bg);color:var(--green)}
+.rd-sconc{background:var(--yellow-bg);color:var(--yellow)}
+.rd-spend{background:var(--yellow-bg);color:var(--yellow)}
+.rd-sden{background:var(--red-bg);color:var(--red)}
+.rd-sapp{background:var(--red-bg);color:var(--red)}
+.rd-sdisc{background:#f1f5f9;color:var(--muted)}
+/* Deadline pills */
+.rd-dp{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:7px;white-space:nowrap}
+.dp-r{background:var(--red);color:#fff}
+.dp-a{color:var(--yellow);border:1px solid var(--yellow)}
+.dp-g{color:var(--orange);border:1px solid var(--orange)}
+.dp-gr{color:var(--green)}
+.dp-gy{color:var(--muted)}
+/* Denial flag inline */
+.rd-flag{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:12px}
+/* Task cards */
+.tkc{display:grid;grid-template-columns:6px 44px 1fr;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px}
+.tkcb{display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none}
+.tkcbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;flex-shrink:0}
+.tkcbox.ck{background:var(--green);border-color:var(--green);color:#fff}
+.tktxt{padding:11px 14px 11px 0;cursor:pointer}
+.tkt1{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
+.tkti{font-size:14px;font-weight:700;color:var(--text)}
+.tkti.done{text-decoration:line-through;color:var(--muted);font-weight:400}
+.tkt2{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+/* Panels */
+.rd-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+.rd-ptitle{font-size:16px;font-weight:800;letter-spacing:-0.3px;margin-bottom:2px}
+.rd-psub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+/* Bar charts */
+.barrow{margin-bottom:13px}
+.barlr{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.barlr .bl{font-weight:600}
+.barlr .bv{font-family:var(--mono);font-weight:600}
+.batr{height:9px;background:#f1f5f9;border-radius:6px;overflow:hidden}
+.bafl{height:9px;border-radius:6px;transition:width .5s ease}
+/* Tiles */
+.rd-tiles{display:flex;gap:12px;flex-wrap:wrap}
+.rd-tile{flex:1;min-width:100px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.rd-tilenum{font-family:var(--mono);font-size:32px;font-weight:700;line-height:1;margin-bottom:6px}
+.rd-tilelbl{font-size:13px;color:var(--muted);font-weight:600}
+/* Cadence */
+.rd-cadwarn{background:var(--yellow-bg);border:1px solid #fcd34d;border-radius:12px;padding:12px 16px;font-size:13px;color:#92400e;margin-bottom:16px;line-height:1.5}
+.rd-cadsec{margin-bottom:20px}
+.rd-cadsec h3{font-size:16px;font-weight:800;letter-spacing:-0.3px;margin-bottom:3px}
+.rd-cadsec .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.rd-cadtbl{width:100%;border-collapse:collapse}
+.rd-cadtbl th{text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;padding:0 6px 10px}
+.rd-cadtbl th:first-child{text-align:left}
+.rd-cadinp{font-family:var(--mono);width:58px;text-align:center;font-size:14px;font-weight:600;color:var(--text);padding:7px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg)}
+.rd-cadinp:focus{outline:none;border-color:var(--sky);background:#fff}
+.rd-cadmce{font-size:14px;font-weight:700;padding:8px 0}
+/* Denial expand section */
+.rd-dex{background:var(--bg);border-top:1px solid var(--border);padding:10px 14px;font-size:12px;display:none}
+.rd-dex.open{display:block}
+.rd-dexg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rd-dexg label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:2px}
+.rd-dexg .dv{font-size:12px;font-weight:600;color:var(--text)}
+.rd-dexg .dv.bad{color:var(--red)}
+.rd-dexg .dv.ok{color:var(--green)}
 /* CSV modal */
 .dz{background:var(--bg);border:2px dashed var(--border);border-radius:9px;padding:26px;text-align:center;margin-bottom:12px}
 /* ── LOGIN SCREEN ── */
@@ -347,11 +441,19 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
   <div class="nav-section">Tools</div>
   <button class="nav-item" onclick="showImport()">&#8593; Import Sunwave</button>
   <button class="nav-item" onclick="exportJSON()">&#8595; Export JSON</button>
+  <button class="nav-item" onclick="go('worklist_rd')" id="nav-worklist_rd">&#9641; Worklist <span class="nav-badge" id="badge-worklist_rd">0</span></button>
   <button class="nav-item" onclick="go('settings')">&#9881; Settings</button>
+  <button class="nav-item" onclick="go('cadence_rd')" id="nav-cadence_rd">&#9736; UR Cadence</button>
   <div class="nav-section" style="margin-top:8px">Provident HCC Apps</div>
   <a class="nav-item" href="https://provident-hcc.github.io/Sunwave/" target="_blank" style="text-decoration:none;color:rgba(255,255,255,.6)">&#9632; Sunwave</a>
   <a class="nav-item" href="https://provident-hcc.github.io/Sunwave/crm/" target="_blank" style="text-decoration:none;color:rgba(255,255,255,.6)">&#9632; Sunwave CRM</a>
   <a class="nav-item" href="https://provident-hcc.github.io/Strive/ctm-calls/" target="_blank" style="text-decoration:none;color:rgba(255,255,255,.6)">&#9632; Strive CTM Calls</a>
+  <div style="padding:0 8px 8px" id="fac-section">
+    <div class="nav-section">Facilities</div>
+    <button class="fac-btn on" onclick="rdSetFac('All')" id="fac-All">All</button>
+    <button class="fac-btn" onclick="rdSetFac('Fort Wayne')" id="fac-Fort-Wayne">Fort Wayne</button>
+    <button class="fac-btn" onclick="rdSetFac('Indianapolis')" id="fac-Indianapolis">Indianapolis</button>
+  </div>
   <div class="sidebar-footer">Provident Healthcare Consulting<br>provident-hcc.github.io/strive-ur</div>
 </nav>
 <div class="main">
@@ -387,6 +489,13 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
     </div>
   </div>
   <div id="demoslot"></div>
+  <div class="rd-stats" id="rd-stats" style="display:none">
+    <div class="rd-sc"><div class="rd-sn" id="rd-st" style="color:var(--yellow)">0</div><div class="rd-sl">Due today</div></div>
+    <div class="rd-sc"><div class="rd-sn" id="rd-so" style="color:var(--red)">0</div><div class="rd-sl">Overdue</div></div>
+    <div class="rd-sc"><div class="rd-sn" id="rd-sk" style="color:var(--sky)">0</div><div class="rd-sl">Open tasks</div></div>
+    <div class="rd-sc"><div class="rd-sn" id="rd-sd" style="color:var(--red)">0</div><div class="rd-sl">Open denials</div></div>
+  </div>
+  <div class="rd-fbar" id="rd-fbar" style="display:none"></div>
   <div class="content" id="content"></div>
 </div>
 </div>
@@ -3055,6 +3164,352 @@ var _isFirstEver=!localStorage.getItem(KEY);
 persist();
 checkFirstLaunch(_isFirstEver);
 go('queue');
+
+// ── REVIEWDESK MODULE (merged from simple.html) ──────────────────────────
+
+const RD_DK='strive_ur_v6', RD_CK='strive_cadence_v1';
+function rdLoadC(){try{return JSON.parse(localStorage.getItem(RD_CK))||rdDC;}catch(e){return rdDC;}}
+function rdSaveC(c){localStorage.setItem(RD_CK,JSON.stringify(c));}
+
+const rdDC={
+  '3.5':{
+    'Anthem':    {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+    'CareSource':{interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:33,initialSLA:1},
+    'MHS':       {interval:5, submitBuffer:1,remindAhead:2,p2p:2,appeal:33,initialSLA:1},
+    'MDwise':    {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+    'Default':   {interval:7, submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+  },
+  '3.1':{
+    'Anthem':    {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:30,initialSLA:2},
+    'CareSource':{interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:33,initialSLA:2},
+    'MHS':       {interval:21,submitBuffer:2,remindAhead:3,p2p:2,appeal:33,initialSLA:2},
+    'MDwise':    {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:30,initialSLA:2},
+    'Default':   {interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:33,initialSLA:2},
+  }
+};
+
+// State
+let rdFLv='All', rdFMce='All', rdFac='All', rdQ='', rdDoneSet=new Set(), rdHideDone=false, rdCv='worklist_rd';
+
+// Normalize payer name
+function rdNp(p){if(!p)return'Default';p=p.toLowerCase();if(p.includes('anthem'))return'Anthem';if(p.includes('caresource')||p.includes('care source'))return'CareSource';if(p.includes('mhs')||p.includes('managed health'))return'MHS';if(p.includes('mdwise'))return'MDwise';return'Default';}
+
+// Normalize level
+function rdNl(l){if(!l)return'3.1';if(l.includes('3.5'))return'3.5';if(l.includes('3.7'))return'3.7';if(l.includes('3.1'))return'3.1';return'3.1';}
+
+// Get cadence config for a record
+function rdGc(r){const CAD=rdLoadC(),lv=rdNl(r.loc),py=rdNp(r.payer),L=CAD[lv]||CAD['3.1']||rdDC['3.1'];return L[py]||L['Default']||rdDC['3.1']['Default'];}
+
+// Add days
+function rdAd(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
+
+// Today at midnight
+function rdT0(){const d=new Date();d.setHours(0,0,0,0);return d;}
+
+// Days until date
+function rdDu(d){if(!d)return null;const dt=new Date(d);dt.setHours(0,0,0,0);return Math.round((dt-rdT0())/86400000);}
+
+// Format date short
+function rdFd(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+
+// Compute deadlines
+function rdDdl(r){
+  const c=rdGc(r);let rv=null;
+  if(!r.authCode&&r.admit)rv=rdAd(r.admit,c.initialSLA);
+  else if(r.authEnd)rv=rdAd(r.authEnd,-c.submitBuffer);
+  const dd=r.denialDate||'';
+  return{reviewDue:rv,p2pDue:dd?rdAd(dd,c.p2p):null,appealDue:dd?rdAd(dd,c.appeal):null,c};
+}
+
+// Pick primary deadline
+function rdPdl(r,dl){
+  const dec=r.decision||'',af=r.appealFiled||'';
+  if(dec==='Denied'&&!af.startsWith('Filed'))return dl.p2pDue;
+  if(af.startsWith('Filed'))return dl.appealDue;
+  return dl.reviewDue;
+}
+
+// Urgency color/label
+function rdUrg(deadline,ra){
+  if(!deadline)return{col:'var(--muted)',lbl:'—',cls:'dp-gy',d:null};
+  const d=rdDu(deadline);
+  if(d<0)return{col:'var(--red)',lbl:Math.abs(d)+'d overdue',cls:'dp-r',d};
+  if(d===0)return{col:'var(--red)',lbl:'Due today',cls:'dp-r',d:0};
+  if(d<=ra)return{col:'var(--yellow)',lbl:'Due '+d+'d',cls:'dp-a',d};
+  if(d<=ra+3)return{col:'var(--orange)',lbl:'Due '+d+'d',cls:'dp-g',d};
+  return{col:'var(--green)',lbl:'Due '+d+'d',cls:'dp-gr',d};
+}
+
+// Episode status
+function rdEs(r){
+  if(r.dischargeDate||(!r.dischargeType||r.dischargeType==='Still Active'?false:r.dischargeType))return'Discharged';
+  if((r.appealFiled||'').startsWith('Filed'))return'Appeal';
+  if(r.decision==='Denied')return'Denied';
+  if(!r.authCode&&!r.authStart)return'Pending Initial';
+  if(r.authEnd){const d=rdDu(r.authEnd);if(d!==null&&d<=3&&d>=0)return'Concurrent Pending';}
+  return'Authorized';
+}
+
+// Status CSS class
+function rdSc(s){return{'Authorized':'rd-sauth','Concurrent Pending':'rd-sconc','Pending Initial':'rd-spend','Denied':'rd-sden','Appeal':'rd-sapp','Discharged':'rd-sdisc'}[s]||'rd-spend';}
+
+// Auto-generate tasks for a record
+function rdAtasks(r){
+  const dl=rdDdl(r),s=rdEs(r),b={rid:r.id,mrn:r.mri,py:rdNp(r.payer),lv:rdNl(r.loc),owner:r.owner||''};
+  const t=[];
+  if(s==='Pending Initial')t.push({...b,id:r.id+'-ini',desc:'Submit initial authorization',due:dl.reviewDue?dl.reviewDue.toISOString().slice(0,10):''});
+  if(s==='Authorized'||s==='Concurrent Pending')t.push({...b,id:r.id+'-cr',desc:'Submit concurrent review',due:dl.reviewDue?dl.reviewDue.toISOString().slice(0,10):''});
+  if(s==='Denied'){t.push({...b,id:r.id+'-p2p',desc:'Request peer-to-peer review',due:dl.p2pDue?dl.p2pDue.toISOString().slice(0,10):''});t.push({...b,id:r.id+'-af',desc:'File appeal if P2P fails',due:dl.appealDue?dl.appealDue.toISOString().slice(0,10):''});}
+  if(s==='Appeal')t.push({...b,id:r.id+'-app',desc:'Submit appeal packet',due:dl.appealDue?dl.appealDue.toISOString().slice(0,10):''});
+  return t;
+}
+
+// All tasks across records
+function rdAllT(){return R.flatMap(r=>rdAtasks(r).concat((r.tasks||[]).map(t=>({...t,rid:r.id,mrn:r.mri,py:rdNp(r.payer),lv:rdNl(r.loc)}))));}
+
+// Is task done
+function rdID(t){return rdDoneSet.has(t.id)||(t.done&&!rdDoneSet.has('undo-'+t.id));}
+
+// Toggle task done
+function rdTogD(tid,seed){if(seed){rdDoneSet.has('undo-'+tid)?rdDoneSet.delete('undo-'+tid):rdDoneSet.add('undo-'+tid);}else{rdDoneSet.has(tid)?rdDoneSet.delete(tid):rdDoneSet.add(tid);}rdRefresh();}
+
+// Update stats bar
+function rdUpdStats(){
+  const all=rdAllT(),active=R.filter(r=>rdEs(r)!=='Discharged');
+  let dt=0,ov=0,ot=0,od=0;
+  active.forEach(r=>{const dl=rdDdl(r);const p=rdPdl(r,dl);if(!p)return;const d=rdDu(p);if(d===0)dt++;if(d!==null&&d<0)ov++;});
+  ot=all.filter(t=>!rdID(t)).length;
+  od=R.filter(r=>r.decision==='Denied'||(r.appealFiled&&r.appealFiled.startsWith('Filed')&&!r.appealOutcome)).length;
+  const st=document.getElementById('rd-st'),so=document.getElementById('rd-so'),sk=document.getElementById('rd-sk'),sd=document.getElementById('rd-sd');
+  const bw=document.getElementById('badge-worklist_rd');
+  if(st)st.textContent=dt;if(so)so.textContent=ov;if(sk)sk.textContent=ot;if(sd)sd.textContent=od;
+  if(bw)bw.textContent=active.length;
+}
+
+// Filter + sort records
+function rdApplyF(recs){
+  return recs.filter(r=>{
+    const lv=rdNl(r.loc),py=rdNp(r.payer),fac=(r.fac||r.facility||r.service_facility||'');
+    if(rdFLv!=='All'&&lv!==rdFLv)return false;
+    if(rdFMce!=='All'&&py!==rdFMce)return false;
+    if(rdFac!=='All'&&!fac.toLowerCase().includes(rdFac.toLowerCase()))return false;
+    if(rdQ){const lq=rdQ.toLowerCase();const s=(r.last+' '+r.first+' '+r.mri+' '+(r.payer||'')+' '+(r.authCode||'')+' '+(r.decision||'')+' '+(r.denialReason||'')+' '+(r.stage||'')+' '+(r.loc||'')+' '+(r.owner||'')).toLowerCase();if(s.indexOf(lq)<0)return false;}
+    return true;
+  }).sort((a,b)=>{
+    const da=rdDdl(a),db=rdDdl(b),pa=rdDu(rdPdl(a,da)),pb=rdDu(rdPdl(b,db));
+    if(pa===null)return 1;if(pb===null)return-1;return pa-pb;
+  });
+}
+
+// Set facility filter
+function rdSetFac(f){
+  rdFac=f;
+  document.querySelectorAll('.fac-btn').forEach(b=>b.classList.remove('on'));
+  const el=document.getElementById('fac-'+f.replace(/ /g,'-'));if(el)el.classList.add('on');
+  if(rdCv&&['worklist_rd','tasks_rd','denials_rd','appeals_rd','reports_rd'].includes(rdCv))rdRefresh();
+}
+
+// Build filter bar
+function rdBuildFbar(){
+  const fb=document.getElementById('rd-fbar');if(!fb)return;
+  if(rdCv==='cadence_rd'){fb.style.display='none';return;}
+  if(!['worklist_rd','tasks_rd','denials_rd','appeals_rd','reports_rd'].includes(rdCv)){fb.style.display='none';return;}
+  fb.style.display='flex';
+  const mces=['All','Anthem','CareSource','MHS','MDwise'],lvs=['All','3.5','3.1'];
+  let h='<div class="rd-seg"><span class="rd-segl">Level</span>';
+  lvs.forEach(l=>h+='<button class="rd-segb'+(rdFLv===l?' on':'')+'" onclick="rdFLv=\''+l+'\';rdRefresh()">'+l+'</button>');
+  h+='</div><div class="rd-seg"><span class="rd-segl">MCE</span>';
+  mces.forEach(m=>h+='<button class="rd-segb'+(rdFMce===m?' on':'')+'" onclick="rdFMce=\''+m+'\';rdRefresh()">'+m+'</button>');
+  h+='</div>';
+  if(rdCv==='tasks_rd')h+='<button class="rd-togb'+(rdHideDone?' on':'')+'" onclick="rdHideDone=!rdHideDone;rdRefresh()">'+(rdHideDone?'Show completed':'Hide completed')+'</button>';
+  fb.innerHTML=h;
+}
+
+// Refresh ReviewDesk views
+function rdRefresh(){rdUpdStats();rdBuildFbar();rdRenderV();}
+
+// Render current ReviewDesk view
+function rdRenderV(){
+  const c=document.getElementById('content'),recs=rdApplyF(R);
+  if(rdCv==='worklist_rd')rdRWL(c,recs);
+  else if(rdCv==='tasks_rd')rdRTK(c,recs);
+  else if(rdCv==='denials_rd')rdRDN(c,recs);
+  else if(rdCv==='appeals_rd')rdRAP(c,recs);
+  else if(rdCv==='reports_rd')rdRRP(c,recs);
+  else if(rdCv==='cadence_rd')rdRCD(c);
+}
+
+// Episode card HTML
+function rdEpCard(r){
+  const dl=rdDdl(r),s=rdEs(r),lv=rdNl(r.loc),py=rdNp(r.payer);
+  const pd=rdPdl(r,dl);
+  const u=s==='Discharged'?{col:'var(--muted)',lbl:'Discharged',cls:'dp-gy'}:rdUrg(pd,dl.c.remindAhead);
+  const lvCls=lv==='3.5'?'lv35':'lv31';
+  const fac=r.fac||r.facility||r.service_facility||'';
+  const dd=r.denialDate?Math.round((rdT0()-new Date(r.denialDate))/86400000):null;
+  const hasD=r.decision==='Denied'||r.decision==='Partial'||(r.appealFiled&&r.appealFiled.startsWith('Filed'));
+  let flags='';
+  if(r.denialReason)flags+='<span class="rd-flag" style="color:var(--red)"><span style="width:5px;height:5px;border-radius:50%;background:var(--red);display:inline-block"></span>'+r.denialReason+'</span>';
+  if(dd!==null&&dd>0)flags+='<span class="rd-flag" style="color:var(--yellow)"><span style="width:5px;height:5px;border-radius:50%;background:var(--yellow);display:inline-block"></span>'+dd+'d denied</span>';
+  if(s==='Denied'&&dl.p2pDue)flags+='<span class="rd-flag" style="color:var(--yellow)"><span style="width:5px;height:5px;border-radius:50%;background:var(--yellow);display:inline-block"></span>P2P due '+rdFd(dl.p2pDue)+'</span>';
+  if(s==='Appeal'&&dl.appealDue)flags+='<span class="rd-flag" style="color:var(--yellow)"><span style="width:5px;height:5px;border-radius:50%;background:var(--yellow);display:inline-block"></span>Appeal due '+rdFd(dl.appealDue)+'</span>';
+  const eid='rdex-'+r.id.replace(/[^a-z0-9]/gi,'_');
+  const exBtn=hasD?'<button onclick="event.stopPropagation();var e=document.getElementById(\''+eid+'\');e.classList.toggle(\'open\')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:5px;background:var(--bg);cursor:pointer;font-family:inherit;color:var(--muted);margin-right:6px">&#9660;</button>':'';
+  const avCls=r.avoidable==='Avoidable'?'bad':r.avoidable==='Not Avoidable'?'ok':'';
+  const outCls=r.appealOutcome?.startsWith('Overturned')?'ok':r.appealOutcome==='Upheld'?'bad':'';
+  const exSection=hasD?'<div class="rd-dex" id="'+eid+'"><div class="rd-dexg"><div><label>Denial Reason</label><div class="dv bad">'+(r.denialReason||'—')+'</div></div><div><label>Subcategory</label><div class="dv">'+(r.denialSub||'—')+'</div></div><div><label>Avoidable?</label><div class="dv '+avCls+'">'+(r.avoidable||'—')+'</div></div><div><label>Days Denied</label><div class="dv bad">'+(dd!==null?dd+'d':'—')+'</div></div><div><label>Appeal Filed</label><div class="dv">'+(r.appealFiled||'—')+'</div></div><div><label>Appeal Outcome</label><div class="dv '+outCls+'">'+(r.appealOutcome||'Pending')+'</div></div></div></div>':'';
+  return '<button class="epc" onclick="editR(\''+r.id+'\')" style="border:1px solid var(--border)">'
+    +'<div style="background:'+u.col+'"></div>'
+    +'<div class="epb"><div class="epr1"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="epmrn">MRN '+(r.mri||r.mrn||'—')+'</span><span class="'+lvCls+'">ASAM '+lv+'</span><span class="epfac">'+fac+'</span></div>'
+    +'<div style="display:flex;align-items:center">'+exBtn+'<span class="rd-dp '+u.cls+'">'+u.lbl+'</span></div></div>'
+    +'<div class="epr2"><span class="rd-sp '+rdSc(s)+'">'+s+'</span><span><b>'+py+'</b> · '+(r.insProduct||r.insType||r.payment_method||'')+'</span><span style="font-family:var(--mono)">Auth '+(r.authCode||'—')+'</span><span>Covered thru <b style="font-family:var(--mono)">'+rdFd(r.authEnd)+'</b></span><span style="margin-left:auto">'+(r.owner||r.coordinator||'—')+'</span></div>'
+    +(flags?'<div class="epr3">'+flags+'</div>':'')
+    +'</div></button>'+exSection;
+}
+
+// Worklist view
+function rdRWL(c,recs){c.innerHTML=recs.length?recs.map(rdEpCard).join(''):'<div class="empty"><div class="ei">&#9641;</div><p>No episodes match these filters.</p></div>';}
+
+// Tasks view
+function rdRTK(c,recs){
+  const all=recs.flatMap(r=>rdAtasks(r).concat((r.tasks||[]).map(t=>({...t,rid:r.id,mrn:r.mri,py:rdNp(r.payer),lv:rdNl(r.loc)}))));
+  let tasks=rdHideDone?all.filter(t=>!rdID(t)):all;
+  tasks.sort((a,b)=>{if(rdID(a)&&!rdID(b))return 1;if(!rdID(a)&&rdID(b))return-1;const da=rdDu(a.due),db=rdDu(b.due);if(da===null)return 1;if(db===null)return-1;return da-db;});
+  if(!tasks.length){c.innerHTML='<div class="empty"><div class="ei">&#10003;</div><p>No tasks. Toggle "Hide completed" to show finished work.</p></div>';return;}
+  c.innerHTML=tasks.map(t=>{
+    const dn=rdID(t);const r=R.find(x=>x.id===t.rid)||{};const cad=rdGc(r);
+    const u=dn?{col:'var(--muted)',lbl:'Done',cls:'dp-gy'}:rdUrg(t.due,cad.remindAhead);
+    const lv=t.lv||rdNl(r.loc),py=t.py||rdNp(r.payer),fac=r.fac||r.facility||r.service_facility||'';
+    const lvCls=lv==='3.5'?'lv35':'lv31';
+    return '<div class="tkc">'
+      +'<div style="background:'+(dn?'var(--muted)':u.col)+'"></div>'
+      +'<div class="tkcb" onclick="rdTogD(\''+t.id+'\','+!!(t.seedDone||false)+')" style="padding:0 12px">'
+        +'<div class="tkcbox'+(dn?' ck':'')+'">'+( dn?'<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+'</div>'
+      +'</div>'
+      +'<div class="tktxt" onclick="editR(\''+t.rid+'\')"><div class="tkt1"><span class="tkti'+(dn?' done':'')+'">'+( t.desc||t.activity||'Task')+'</span>'+(dn?'<span class="rd-dp dp-gy">Done</span>':'<span class="rd-dp '+u.cls+'">'+u.lbl+'</span>')+'</div>'
+        +'<div class="tkt2"><span style="font-family:var(--mono)">MRN '+t.mrn+'</span><span class="'+lvCls+'">ASAM '+lv+'</span><span><b>'+py+'</b> · '+fac+'</span><span style="font-family:var(--mono)">Due '+rdFd(t.due)+'</span><span style="margin-left:auto">'+(t.owner||r.owner||'—')+'</span></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+// Denials view
+function rdRDN(c,recs){
+  const dn=recs.filter(r=>r.decision==='Denied'||r.decision==='Partial');
+  const rm={};dn.forEach(r=>{const k=r.denialReason||'Unknown';rm[k]=(rm[k]||0)+1;});
+  const rs=Object.entries(rm).sort((a,b)=>b[1]-a[1]),mx=rs[0]?.[1]||1;
+  const mm={};dn.forEach(r=>{const k=rdNp(r.payer);mm[k]=(mm[k]||0)+1;});
+  const ms=Object.entries(mm).sort((a,b)=>b[1]-a[1]),mxm=ms[0]?.[1]||1;
+  c.innerHTML='<div class="rd-panel"><div class="rd-ptitle">Denials by reason</div><div class="rd-psub">Trailing 90 days · feeds the denial taxonomy</div>'
+    +(rs.length?rs.map(([r,n])=>'<div class="barrow"><div class="barlr"><span class="bl">'+r+'</span><span class="bv">'+n+'</span></div><div class="batr"><div class="bafl" style="width:'+Math.round(n/mx*100)+'%;background:var(--sky)"></div></div></div>').join(''):'<div style="color:var(--muted)">No denials in this period.</div>')
+    +'</div><div class="rd-panel"><div class="rd-ptitle">Denial volume by MCE</div><div class="rd-psub">Where to focus payer escalation</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:16px;height:130px;padding-top:8px">'
+    +ms.map(([m,n])=>'<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><span style="font-family:var(--mono);font-weight:700;font-size:14px;margin-bottom:5px">'+n+'</span><div style="width:100%;max-width:70px;height:'+Math.round(n/mxm*100)+'%;background:var(--navy);border-radius:7px 7px 0 0"></div><span style="font-size:12.5px;color:var(--muted);margin-top:6px;font-weight:600">'+m+'</span></div>').join('')
+    +'</div></div>'
+    +(dn.length?'<div style="font-size:13px;font-weight:700;margin-bottom:10px">Denied Records ('+dn.length+')</div>'+dn.map(rdEpCard).join(''):'');
+}
+
+// Appeals view
+function rdRAP(c,recs){
+  const ap=recs.filter(r=>(r.appealFiled&&r.appealFiled.startsWith('Filed'))||r.decision==='Denied');
+  if(!ap.length){c.innerHTML='<div class="empty"><div class="ei">&#9671;</div><p>No open appeals or denied records requiring action.</p></div>';return;}
+  const pend=ap.filter(r=>!r.appealOutcome||r.appealOutcome==='');
+  const res=ap.filter(r=>r.appealOutcome&&r.appealOutcome!=='');
+  const ot=res.filter(r=>r.appealOutcome?.startsWith('Overturned')).length;
+  const otp=res.length?Math.round(ot/res.length*100):0;
+  let h='<div class="rd-panel" style="margin-bottom:14px"><div style="display:flex;gap:16px;flex-wrap:wrap">'
+    +'<div><div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--yellow)">'+pend.length+'</div><div style="font-size:11px;font-weight:600;color:var(--muted)">Active</div></div>'
+    +'<div><div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--green)">'+ot+'</div><div style="font-size:11px;font-weight:600;color:var(--muted)">Overturned</div></div>'
+    +'<div><div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--sky)">'+otp+'%</div><div style="font-size:11px;font-weight:600;color:var(--muted)">Overturn rate</div></div>'
+    +'</div></div>';
+  if(pend.length)h+='<div style="font-size:13px;font-weight:700;margin-bottom:10px">Active Appeals & Denials ('+pend.length+')</div>'+pend.map(rdEpCard).join('');
+  if(res.length)h+='<div style="font-size:13px;font-weight:700;margin:18px 0 10px">Resolved ('+res.length+')</div>'+res.map(rdEpCard).join('');
+  c.innerHTML=h;
+}
+
+// Reports view
+function rdRRP(c,recs){
+  const pm={};recs.forEach(r=>{const k=rdNp(r.payer);if(!pm[k])pm[k]={req:0,ap:0};pm[k].req+=(r.daysReq||0);pm[k].ap+=(r.daysAuth||0);});
+  const ps=Object.entries(pm).filter(([,v])=>v.req>0).sort((a,b)=>(b[1].ap/b[1].req)-(a[1].ap/a[1].req));
+  const active=recs.filter(r=>rdEs(r)!=='Discharged');
+  const lv35=active.filter(r=>rdNl(r.loc)==='3.5').length,lv31=active.filter(r=>rdNl(r.loc)==='3.1').length;
+  const disc=recs.filter(r=>rdEs(r)==='Discharged').length;
+  const om={};R.forEach(r=>{if(rdEs(r)!=='Discharged'){const o=r.owner||'Unassigned';if(!om[o])om[o]={t:0,ov:0};om[o].t++;}});
+  R.forEach(r=>{const dl=rdDdl(r);const pd=rdPdl(r,dl);const d=rdDu(pd);if(d!==null&&d<0){const o=r.owner||'Unassigned';if(om[o])om[o].ov++;}});
+  const ows=Object.entries(om).sort((a,b)=>b[1].t-a[1].t),mxo=ows[0]?.[1].t||1;
+  const sm={};R.filter(r=>rdEs(r)!=='Discharged').forEach(r=>{const s=rdEs(r);sm[s]=(sm[s]||0)+1;});
+  const ss=Object.entries(sm).sort((a,b)=>b[1]-a[1]),tot=active.length||1;
+  const scols={'Authorized':'var(--green)','Pending Initial':'var(--yellow)','Concurrent Pending':'var(--yellow)','Denied':'var(--red)','Appeal':'var(--red)'};
+  c.innerHTML='<div class="rd-panel"><div class="rd-ptitle">Approved vs requested days</div><div class="rd-psub">UR leading indicator — approval yield by MCE</div>'
+    +(ps.map(([p,v])=>{const pct=Math.round(v.ap/v.req*100),col=pct>=90?'var(--green)':pct>=85?'var(--yellow)':'var(--red)';return'<div class="barrow"><div class="barlr"><span class="bl">'+p+'</span><span class="bv" style="color:'+col+'">'+pct+'% <span style="color:var(--muted);font-weight:400">· '+v.ap+'/'+v.req+' days</span></span></div><div class="batr" style="height:11px"><div class="bafl" style="height:11px;width:'+pct+'%;background:'+col+'"></div></div></div>';}).join('')||'<div style="color:var(--muted)">Fill in Days Requested and Days Authorized in records to see this chart.</div>')
+    +'</div><div class="rd-panel"><div class="rd-ptitle">Open episodes by level</div><div class="rd-psub">Current census in review</div><div class="rd-tiles">'
+    +'<div class="rd-tile"><div class="rd-tilenum" style="color:var(--sky)">'+lv35+'</div><div class="rd-tilelbl">ASAM 3.5</div></div>'
+    +'<div class="rd-tile"><div class="rd-tilenum" style="color:var(--yellow)">'+lv31+'</div><div class="rd-tilelbl">ASAM 3.1</div></div>'
+    +'<div class="rd-tile"><div class="rd-tilenum" style="color:var(--muted)">'+disc+'</div><div class="rd-tilelbl">Discharged</div></div>'
+    +'</div></div><div class="rd-panel"><div class="rd-ptitle">Workload by coordinator</div><div class="rd-psub">Active records per owner — red = overdue</div>'
+    +ows.map(([o,v])=>{const w=Math.round(v.t/mxo*100);return'<div class="barrow"><div class="barlr"><span class="bl">'+o+'</span><span class="bv">'+v.t+(v.ov>0?' <span style="color:var(--red);font-size:11px">('+v.ov+' overdue)</span>':'')+'</span></div><div class="batr"><div style="height:9px;border-radius:6px;overflow:hidden;display:flex"><div style="width:'+Math.round((v.t-v.ov)/v.t*100*w/100)+'%;background:var(--sky)"></div><div style="width:'+Math.round(v.ov/v.t*100*w/100)+'%;background:var(--red)"></div></div></div></div>';}).join('')
+    +'</div><div class="rd-panel"><div class="rd-ptitle">Authorization pipeline</div><div class="rd-psub">Active records by current stage</div>'
+    +ss.map(([s,n])=>{const col=scols[s]||'var(--muted)',pct=Math.round(n/tot*100);return'<div class="barrow"><div class="barlr"><span class="bl">'+s+'</span><span class="bv" style="font-family:var(--mono)">'+n+' <span style="color:var(--muted);font-size:11px">'+pct+'%</span></span></div><div class="batr"><div class="bafl" style="width:'+pct+'%;background:'+col+'"></div></div></div>';}).join('')
+    +'</div>';
+}
+
+// Cadence config view
+function rdRCD(c){
+  const CAD=rdLoadC();
+  const lvs=['3.5','3.1'],mces=['Anthem','CareSource','MHS','MDwise'];
+  const cols=[['interval','Span'],['submitBuffer','Submit buffer'],['remindAhead','Remind ahead'],['p2p','P2P window'],['appeal','Appeal window'],['initialSLA','Initial SLA']];
+  let h='<div class="rd-cadwarn"><b>Illustrative values.</b> Confirm every interval against each MCE\'s UM / provider manual before go-live. Editing a value here re-derives all due dates, urgency bands, and tasks across the app — try it, then check the Worklist.</div>';
+  lvs.forEach(lv=>{
+    h+='<div class="rd-panel rd-cadsec"><h3>ASAM '+lv+'</h3><div class="sub" style="font-size:12px;color:var(--muted);margin-bottom:14px">Days. Submit buffer = days before coverage lapses; remind ahead = when a task turns amber.</div><div style="overflow-x:auto"><table class="rd-cadtbl"><thead><tr><th style="text-align:left">MCE</th>'+cols.map(([k,l])=>'<th>'+l+'</th>').join('')+'</tr></thead><tbody>';
+    mces.forEach(m=>{
+      const row=(CAD[lv]||{})[m]||(rdDC[lv]||{})[m]||rdDC['3.1']['Default'];
+      h+='<tr><td class="rd-cadmce">'+m+'</td>'+cols.map(([k])=>'<td style="text-align:center;padding:5px 6px"><input type="number" min="0" class="rd-cadinp" value="'+(row[k]||0)+'" onchange="rdUpdCad(\''+lv+'\',\''+m+'\',\''+k+'\',this.value)"></td>').join('')+'</tr>';
+    });
+    h+='</tbody></table></div></div>';
+  });
+  c.innerHTML=h;
+}
+
+// Update cadence value
+function rdUpdCad(lv,mce,key,val){
+  const CAD=rdLoadC();
+  if(!CAD[lv])CAD[lv]={};
+  if(!CAD[lv][mce])CAD[lv][mce]={...(rdDC[lv]||{})[mce]||rdDC['3.1']['Default']};
+  CAD[lv][mce][key]=Math.max(0,parseInt(val)||0);
+  rdSaveC(CAD);rdUpdStats();
+}
+
+// Hook into go() for new ReviewDesk views
+const _origGo=go;
+function go(v){
+  const rdViews=['worklist_rd','tasks_rd','denials_rd','appeals_rd','reports_rd','cadence_rd'];
+  if(rdViews.includes(v)){
+    rdCv=v;cv=v;currentView=v;
+    document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+    const n=document.getElementById('nav-'+v);if(n)n.classList.add('active');
+    const titles={
+      worklist_rd:'UR Worklist',tasks_rd:'UR Tasks',denials_rd:'Denials',
+      appeals_rd:'Appeals',reports_rd:'UR Reports',cadence_rd:'UR Cadence Config'
+    };
+    const subs={
+      worklist_rd:'Episode cards sorted by deadline urgency',
+      tasks_rd:'Auto-generated and manual tasks across all records',
+      denials_rd:'Denial breakdown by reason and payer',
+      appeals_rd:'Open and resolved appeals tracker',
+      reports_rd:'Approval yield, census, and workload reports',
+      cadence_rd:'Review interval and deadline configuration by MCE and level'
+    };
+    document.getElementById('vtitle').textContent=titles[v]||v;
+    document.getElementById('vsub').textContent=subs[v]||'';
+    const rdStats=document.getElementById('rd-stats');if(rdStats)rdStats.style.display=v==='cadence_rd'?'none':'flex';
+    const c=document.getElementById('content');c.style.padding='18px';c.style.overflow='auto';
+    rdRefresh();
+  } else {
+    // Hide ReviewDesk UI on non-RD views
+    const rdStats=document.getElementById('rd-stats');if(rdStats)rdStats.style.display='none';
+    const rdFbar=document.getElementById('rd-fbar');if(rdFbar)rdFbar.style.display='none';
+    _origGo(v);
+  }
+}
 </script>
 </body>
 </html>
