@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReviewDesk — Strive Recovery UR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#15201E;--ink2:#243430;--paper:#F4F6F3;--surf:#FFFFFF;
+  --line:#E4E7E1;--line2:#EEF0EC;--p:#0F6E64;--pd:#0A4D46;--pw:#E5F0EE;
+  --sub:#5C6863;--red:#C0392B;--redw:#F7E7E4;--amb:#C97A14;--ambw:#F8ECDB;
+  --gld:#9A7B12;--gldw:#F4EFDC;--grn:#1F8A57;--grnw:#E3F1E9;--gry:#7A857F;--gryw:#ECEEEB;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:var(--paper);color:var(--ink);height:100vh;overflow:hidden}
+.app{display:flex;height:100vh;overflow:hidden}
+/* SIDEBAR */
+.sb{width:220px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;scrollbar-width:none}
+.sb::-webkit-scrollbar{display:none}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--ink2)}
+.lb{width:28px;height:28px;border-radius:8px;background:var(--p);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;margin-right:8px;vertical-align:middle}
+.ln{font-weight:800;font-size:15px;letter-spacing:-0.3px;vertical-align:middle;color:#fff}
+.ls{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8FA39C;margin-top:5px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:2px 8px;border-radius:9px;cursor:pointer;color:#BFCBC6;font-size:14px;font-weight:600;transition:all .12s;border:none;background:none;width:calc(100% - 16px);text-align:left;font-family:inherit}
+.ni:hover{background:rgba(255,255,255,.06);color:#fff}
+.ni.on{background:var(--p);color:#fff}
+.nbadge{margin-left:auto;background:var(--pd);color:rgba(255,255,255,.85);font-size:11px;padding:1px 7px;border-radius:10px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.nsec{padding:14px 14px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6F837C}
+.fb{display:block;width:100%;text-align:left;padding:6px 12px;border-radius:7px;border:none;background:transparent;color:#9FB0AA;font-size:13px;cursor:pointer;font-family:inherit;transition:all .12s}
+.fb:hover,.fb.on{background:var(--ink2);color:#fff}
+.sf{margin-top:auto;padding:12px 16px;border-top:1px solid var(--ink2);font-size:11px;color:#8FA39C;line-height:1.6}
+.sf a{color:var(--p);text-decoration:none;font-weight:600}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--surf);border-bottom:1px solid var(--line);padding:16px 24px 0;flex-shrink:0}
+.tv{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:2px}
+.ts{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--sub);margin-bottom:12px}
+.gs{display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:20px;padding:6px 14px;max-width:420px;margin-bottom:12px;transition:all .15s}
+.gs:focus-within{border-color:var(--p);background:#fff;box-shadow:0 0 0 3px rgba(15,110,100,.1)}
+.gs input{border:none;background:none;outline:none;font-size:12px;color:var(--ink);width:100%;font-family:inherit}
+.gs input::placeholder{color:var(--sub)}
+.stats{display:flex;gap:10px;padding-bottom:14px;flex-wrap:wrap}
+.sc{background:var(--surf);border:1px solid var(--line);border-radius:11px;padding:9px 16px;min-width:88px}
+.sn{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;line-height:1}
+.sl{font-size:11.5px;color:var(--sub);margin-top:3px;font-weight:600}
+/* FILTER BAR */
+.fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 24px;background:var(--surf);border-bottom:1px solid var(--line);flex-shrink:0}
+.seg{display:flex;align-items:center;background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:3px}
+.segl{font-size:11px;color:var(--sub);font-weight:700;padding:0 8px;text-transform:uppercase;letter-spacing:.5px}
+.segb{padding:5px 11px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--sub);font-family:inherit;transition:all .12s}
+.segb.on{background:var(--ink);color:#fff}
+.segb:hover:not(.on){background:rgba(0,0,0,.05)}
+.togb{padding:7px 12px;border-radius:9px;border:1px solid var(--line);background:var(--surf);font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;font-family:inherit;transition:all .12s}
+.togb:hover{border-color:var(--p);color:var(--p)}
+.togb.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:16px 24px}
+/* EPISODE CARDS */
+.epc{display:grid;grid-template-columns:6px 1fr;background:var(--surf);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:8px;cursor:pointer;width:100%;border:none;font-family:inherit;text-align:left;transition:box-shadow .12s}
+.epc:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.epb{padding:11px 14px}
+.epr1{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.epr2{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+.epr3{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.epmrn{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--ink)}
+.epfac{font-size:12.5px;color:var(--sub);font-weight:600}
+/* BADGES */
+.lv35{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--pw);color:var(--pd);border:1px solid #BFE0DA}
+.lv31{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--gryw);color:var(--sub);border:1px solid var(--line)}
+.sp{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}
+.sauth{background:var(--grnw);color:var(--grn)} .sconc{background:var(--ambw);color:var(--amb)}
+.spend{background:var(--ambw);color:var(--amb)} .sden{background:var(--redw);color:var(--red)}
+.sapp{background:var(--redw);color:var(--red)} .sdisc{background:var(--gryw);color:var(--gry)}
+.dp{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:7px;white-space:nowrap}
+.dp-r{background:var(--red);color:#fff} .dp-a{color:var(--amb);border:1px solid var(--amb)}
+.dp-g{color:var(--gld);border:1px solid var(--gld)} .dp-gr{color:var(--grn)}
+.dp-gy{color:var(--gry)} .flag{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:12px}
+/* TASK CARDS */
+.tkc{display:grid;grid-template-columns:6px 44px 1fr;background:var(--surf);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:8px}
+.tkcb{display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none}
+.tkcbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;flex-shrink:0}
+.tkcbox.ck{background:var(--grn);border-color:var(--grn);color:#fff}
+.tktxt{padding:11px 14px 11px 0;cursor:pointer}
+.tkt1{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
+.tkti{font-size:14px;font-weight:700;color:var(--ink)}
+.tkti.done{text-decoration:line-through;color:var(--sub);font-weight:400}
+.tkt2{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+/* PANELS */
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+.ptitle{font-size:16px;font-weight:800;letter-spacing:-0.3px;margin-bottom:2px}
+.psub{font-size:12.5px;color:var(--sub);margin-bottom:16px}
+/* BARS */
+.barrow{margin-bottom:13px}
+.barlr{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.barlr .bl{font-weight:600} .barlr .bv{font-family:'IBM Plex Mono',monospace;font-weight:600}
+.batr{height:9px;background:var(--line2);border-radius:6px;overflow:hidden}
+.bafl{height:9px;border-radius:6px;transition:width .5s ease}
+/* TILES */
+.tiles{display:flex;gap:12px;flex-wrap:wrap}
+.tile{flex:1;min-width:100px;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tilenum{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;line-height:1;margin-bottom:6px}
+.tilelbl{font-size:13px;color:var(--sub);font-weight:600}
+/* CADENCE */
+.cadwarn{background:var(--ambw);border:1px solid #E8D2A8;border-radius:12px;padding:12px 16px;font-size:13px;color:#7A5A12;margin-bottom:16px;line-height:1.5}
+.cadsec{margin-bottom:20px}
+.cadsec h3{font-size:16px;font-weight:800;letter-spacing:-0.3px;margin-bottom:3px}
+.cadsec .sub{font-size:12px;color:var(--sub);margin-bottom:14px}
+.cadtbl{width:100%;border-collapse:collapse}
+.cadtbl th{text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);font-weight:700;padding:0 6px 10px}
+.cadtbl th:first-child{text-align:left}
+.cadinp{font-family:'IBM Plex Mono',monospace;width:58px;text-align:center;font-size:14px;font-weight:600;color:var(--ink);padding:7px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper)}
+.cadinp:focus{outline:none;border-color:var(--p);background:#fff}
+.cadmce{font-size:14px;font-weight:700;padding:8px 0}
+/* DENIAL EXPAND */
+.dex{background:var(--paper);border-top:1px solid var(--line);padding:10px 14px;font-size:12px;display:none}
+.dex.open{display:block}
+.dexg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dexg label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);display:block;margin-bottom:2px}
+.dexg .dv{font-size:12px;font-weight:600;color:var(--ink)}
+.dexg .dv.bad{color:var(--red)} .dexg .dv.ok{color:var(--grn)}
+/* EXPORT */
+.xbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.xbl{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}
+.xb{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:var(--surf);color:var(--sub);transition:all .12s;font-family:inherit}
+.xb:hover{border-color:var(--p);color:var(--p)}
+.empty{text-align:center;padding:40px;color:var(--sub);border:1px dashed var(--line);border-radius:12px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sb">
+  <div class="sb-logo">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <div class="lb">UR</div><span class="ln">ReviewDesk</span>
+    </div>
+    <div class="ls">ASAM 3.5 / 3.1 · Indiana · Strive Recovery</div>
+  </div>
+  <div style="padding:10px 8px;flex:1">
+    <button class="ni on" onclick="go('worklist')" id="nav-worklist">&#9641; Worklist <span class="nbadge" id="bw">0</span></button>
+    <button class="ni" onclick="go('tasks')" id="nav-tasks">&#10003; Tasks <span class="nbadge" id="bt">0</span></button>
+    <button class="ni" onclick="go('denials')" id="nav-denials">&#9646; Denials</button>
+    <button class="ni" onclick="go('appeals')" id="nav-appeals">&#9648; Appeals <span class="nbadge" id="ba">0</span></button>
+    <button class="ni" onclick="go('reports')" id="nav-reports">&#9645; Reports</button>
+    <button class="ni" onclick="go('cadence')" id="nav-cadence">&#9881; Cadence</button>
+  </div>
+  <div style="padding:0 8px 8px">
+    <div class="nsec">Facilities</div>
+    <button class="fb on" onclick="setFac('All')" id="fac-All">All</button>
+    <button class="fb" onclick="setFac('Fort Wayne')" id="fac-Fort-Wayne">Fort Wayne</button>
+    <button class="fb" onclick="setFac('Indianapolis')" id="fac-Indianapolis">Indianapolis</button>
+  </div>
+  <div class="sf">
+    <select id="usel" onchange="setUser(this.value)" style="width:100%;background:var(--ink2);border:1px solid var(--ink2);color:#DDE4E0;border-radius:7px;padding:5px 8px;font-family:inherit;font-size:12px;margin-bottom:6px">
+      <option value="">All coordinators</option>
+      <option>Meredith Dawson</option><option>John Delahoyde</option>
+      <option>Dusty Dawkins</option><option>Heather Reynolds</option>
+      <option>UR Director</option>
+    </select>
+    <div><a href="index.html">&#8594; Switch to Full App</a></div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div class="tv" id="vtitle">Review Worklist</div>
+    <div class="ts" id="vsub">Loading...</div>
+    <div class="gs">
+      <span style="color:var(--sub);font-size:13px">&#9906;</span>
+      <input id="gsi" placeholder="Search MRN, auth code, payer, denial reason, stage, coordinator..." oninput="onSearch(this.value)">
+    </div>
+    <div class="stats">
+      <div class="sc"><div class="sn" id="st" style="color:var(--amb)">0</div><div class="sl">Due today</div></div>
+      <div class="sc"><div class="sn" id="so" style="color:var(--red)">0</div><div class="sl">Overdue</div></div>
+      <div class="sc"><div class="sn" id="sk" style="color:var(--p)">0</div><div class="sl">Open tasks</div></div>
+      <div class="sc"><div class="sn" id="sd" style="color:var(--red)">0</div><div class="sl">Open denials</div></div>
+    </div>
+  </div>
+  <div class="fbar" id="fbar"></div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+<script>
+const DK='strive_ur_v6',CK='strive_cadence_v1';
+function loadR(){try{return JSON.parse(localStorage.getItem(DK))||[];}catch(e){return[];}}
+function loadC(){try{return JSON.parse(localStorage.getItem(CK))||DC;}catch(e){return DC;}}
+function saveC(c){localStorage.setItem(CK,JSON.stringify(c));}
+const DC={
+  '3.5':{
+    'Anthem':{interval:7,submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+    'CareSource':{interval:7,submitBuffer:1,remindAhead:2,p2p:1,appeal:33,initialSLA:1},
+    'MHS':{interval:5,submitBuffer:1,remindAhead:2,p2p:2,appeal:33,initialSLA:1},
+    'MDwise':{interval:7,submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+    'Default':{interval:7,submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
+  },
+  '3.1':{
+    'Anthem':{interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:30,initialSLA:2},
+    'CareSource':{interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:33,initialSLA:2},
+    'MHS':{interval:21,submitBuffer:2,remindAhead:3,p2p:2,appeal:33,initialSLA:2},
+    'MDwise':{interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:30,initialSLA:2},
+    'Default':{interval:14,submitBuffer:2,remindAhead:3,p2p:1,appeal:33,initialSLA:2},
+  }
+};
+let R=[],CAD={},cv='worklist',fLv='All',fMce='All',fFac='All',fUser='',q='',doneSet=new Set(),hideDone=false;
+function np(p){if(!p)return'Default';p=p.toLowerCase();if(p.includes('anthem'))return'Anthem';if(p.includes('caresource')||p.includes('care source'))return'CareSource';if(p.includes('mhs')||p.includes('managed health'))return'MHS';if(p.includes('mdwise'))return'MDwise';return'Default';}
+function nl(l){if(!l)return'3.1';if(l.includes('3.5'))return'3.5';if(l.includes('3.7'))return'3.7';if(l.includes('3.1'))return'3.1';return'3.1';}
+function gc(r){const lv=nl(r.loc),py=np(r.payer),L=CAD[lv]||CAD['3.1']||DC['3.1'];return L[py]||L['Default']||DC['3.1']['Default'];}
+function ad(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function t0(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function du(d){if(!d)return null;const dt=new Date(d);dt.setHours(0,0,0,0);return Math.round((dt-t0())/86400000);}
+function fd(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function ddl(r){
+  const c=gc(r);let rv=null;
+  if(!r.authCode&&r.admit)rv=ad(r.admit,c.initialSLA);
+  else if(r.authEnd)rv=ad(r.authEnd,-c.submitBuffer);
+  const dd=r.denialDate||'';
+  return{reviewDue:rv,p2pDue:dd?ad(dd,c.p2p):null,appealDue:dd?ad(dd,c.appeal):null,c};
+}
+function pdl(r,dl){
+  const dec=r.decision||'',af=r.appealFiled||'';
+  if(dec==='Denied'&&!af.startsWith('Filed'))return dl.p2pDue;
+  if(af.startsWith('Filed'))return dl.appealDue;
+  return dl.reviewDue;
+}
+function urg(deadline,ra){
+  if(!deadline)return{col:'#7A857F',lbl:'—',cls:'dp-gy',d:null};
+  const d=du(deadline);
+  if(d<0)return{col:'#C0392B',lbl:Math.abs(d)+'d overdue',cls:'dp-r',d};
+  if(d===0)return{col:'#C0392B',lbl:'Due today',cls:'dp-r',d:0};
+  if(d<=ra)return{col:'#C97A14',lbl:'Due '+d+'d',cls:'dp-a',d};
+  if(d<=ra+3)return{col:'#9A7B12',lbl:'Due '+d+'d',cls:'dp-g',d};
+  return{col:'#1F8A57',lbl:'Due '+d+'d',cls:'dp-gr',d};
+}
+function es(r){
+  if(r.dischargeDate||r.dischargeType==='Still Active'?false:r.dischargeType)return'Discharged';
+  if((r.appealFiled||'').startsWith('Filed'))return'Appeal';
+  if(r.decision==='Denied')return'Denied';
+  if(!r.authCode&&!r.authStart)return'Pending Initial';
+  if(r.authEnd){const d=du(r.authEnd);if(d!==null&&d<=3&&d>=0)return'Concurrent Pending';}
+  return'Authorized';
+}
+function sc(s){return{'Authorized':'sauth','Concurrent Pending':'sconc','Pending Initial':'spend','Denied':'sden','Appeal':'sapp','Discharged':'sdisc'}[s]||'spend';}
+function atasks(r){
+  const dl=ddl(r),s=es(r),b={rid:r.id,mrn:r.mri,py:np(r.payer),lv:nl(r.loc),owner:r.owner||''};
+  const t=[];
+  if(s==='Pending Initial')t.push({...b,id:r.id+'-ini',desc:'Submit initial authorization',due:dl.reviewDue?dl.reviewDue.toISOString().slice(0,10):''});
+  if(s==='Authorized'||s==='Concurrent Pending')t.push({...b,id:r.id+'-cr',desc:'Submit concurrent review',due:dl.reviewDue?dl.reviewDue.toISOString().slice(0,10):''});
+  if(s==='Denied'){t.push({...b,id:r.id+'-p2p',desc:'Request peer-to-peer review',due:dl.p2pDue?dl.p2pDue.toISOString().slice(0,10):''});t.push({...b,id:r.id+'-af',desc:'File appeal if P2P fails',due:dl.appealDue?dl.appealDue.toISOString().slice(0,10):''});}
+  if(s==='Appeal')t.push({...b,id:r.id+'-app',desc:'Submit appeal packet',due:dl.appealDue?dl.appealDue.toISOString().slice(0,10):''});
+  return t;
+}
+function allT(){return R.flatMap(r=>atasks(r).concat((r.tasks||[]).map(t=>({...t,rid:r.id,mrn:r.mri,py:np(r.payer),lv:nl(r.loc)}))));}
+function iD(t){return doneSet.has(t.id)||(t.done&&!doneSet.has('undo-'+t.id));}
+function togD(tid,seed){if(seed){doneSet.has('undo-'+tid)?doneSet.delete('undo-'+tid):doneSet.add('undo-'+tid);}else{doneSet.has(tid)?doneSet.delete(tid):doneSet.add(tid);}refresh();}
+function updStats(){
+  const all=allT(),active=R.filter(r=>es(r)!=='Discharged');
+  let dt=0,ov=0,ot=0,od=0;
+  active.forEach(r=>{const dl=ddl(r);const p=pdl(r,dl);if(!p)return;const d=du(p);if(d===0)dt++;if(d!==null&&d<0)ov++;});
+  ot=all.filter(t=>!iD(t)).length;
+  od=R.filter(r=>r.decision==='Denied'||(r.appealFiled&&r.appealFiled.startsWith('Filed')&&!r.appealOutcome)).length;
+  document.getElementById('st').textContent=dt;
+  document.getElementById('so').textContent=ov;
+  document.getElementById('sk').textContent=ot;
+  document.getElementById('sd').textContent=od;
+  document.getElementById('bw').textContent=active.length;
+  document.getElementById('bt').textContent=ot;
+  document.getElementById('ba').textContent=od;
+}
+function applyF(recs){
+  return recs.filter(r=>{
+    const lv=nl(r.loc),py=np(r.payer),fac=(r.fac||r.facility||r.service_facility||'');
+    if(fLv!=='All'&&lv!==fLv)return false;
+    if(fMce!=='All'&&py!==fMce)return false;
+    if(fFac!=='All'&&!fac.toLowerCase().includes(fFac.toLowerCase()))return false;
+    if(fUser&&r.owner!==fUser&&r.coordinator!==fUser)return false;
+    if(q){const lq=q.toLowerCase();const s=(r.last+' '+r.first+' '+r.mri+' '+(r.payer||'')+' '+(r.authCode||'')+' '+(r.decision||'')+' '+(r.denialReason||'')+' '+(r.stage||'')+' '+(r.loc||'')+' '+(r.owner||'')).toLowerCase();if(s.indexOf(lq)<0)return false;}
+    return true;
+  }).sort((a,b)=>{
+    const da=ddl(a),db=ddl(b),pa=du(pdl(a,da)),pb=du(pdl(b,db));
+    if(pa===null)return 1;if(pb===null)return-1;return pa-pb;
+  });
+}
+function go(v){
+  cv=v;
+  document.querySelectorAll('.ni').forEach(e=>e.classList.remove('on'));
+  const n=document.getElementById('nav-'+v);if(n)n.classList.add('on');
+  document.getElementById('vtitle').textContent={worklist:'Review Worklist',tasks:'Tasks',denials:'Denials',appeals:'Appeals',reports:'Reports',cadence:'Cadence Config'}[v]||v;
+  refresh();
+}
+function setFac(f){fFac=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));const el=document.getElementById('fac-'+f.replace(' ','-'));if(el)el.classList.add('on');refresh();}
+function setUser(u){fUser=u;refresh();}
+function onSearch(v){q=v;refresh();}
+function refresh(){updStats();buildFbar();renderV();}
+function buildFbar(){
+  const fb=document.getElementById('fbar');
+  if(cv==='cadence'){fb.innerHTML='';return;}
+  const mces=['All','Anthem','CareSource','MHS','MDwise'],lvs=['All','3.5','3.1'];
+  let h='<div class="seg"><span class="segl">Level</span>';
+  lvs.forEach(l=>h+='<button class="segb'+(fLv===l?' on':'')+'" onclick="fLv=\''+l+'\';refresh()">'+l+'</button>');
+  h+='</div><div class="seg"><span class="segl">MCE</span>';
+  mces.forEach(m=>h+='<button class="segb'+(fMce===m?' on':'')+'" onclick="fMce=\''+m+'\';refresh()">'+m+'</button>');
+  h+='</div>';
+  if(cv==='tasks')h+='<button class="togb'+(hideDone?' on':'')+'" onclick="hideDone=!hideDone;refresh()">'+(hideDone?'Show completed':'Hide completed')+'</button>';
+  fb.innerHTML=h;
+}
+function renderV(){
+  const c=document.getElementById('content'),recs=applyF(R);
+  const d=new Date();
+  document.getElementById('vsub').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric',year:'numeric'})+' · '+recs.length+(cv==='tasks'?' tasks':' episodes');
+  if(cv==='worklist')rWL(c,recs);
+  else if(cv==='tasks')rTK(c,recs);
+  else if(cv==='denials')rDN(c,recs);
+  else if(cv==='appeals')rAP(c,recs);
+  else if(cv==='reports')rRP(c,recs);
+  else if(cv==='cadence')rCD(c);
+}
+function epCard(r){
+  const dl=ddl(r),s=es(r),lv=nl(r.loc),py=np(r.payer);
+  const pd=pdl(r,dl);
+  const u=s==='Discharged'?{col:'#7A857F',lbl:'Discharged',cls:'dp-gy'}:urg(pd,dl.c.remindAhead);
+  const lvCls=lv==='3.5'?'lv35':'lv31';
+  const fac=r.fac||r.facility||r.service_facility||'';
+  const dd=r.denialDate?Math.round((t0()-new Date(r.denialDate))/86400000):null;
+  const hasD=r.decision==='Denied'||r.decision==='Partial'||(r.appealFiled&&r.appealFiled.startsWith('Filed'));
+  let flags='';
+  if(r.denialReason)flags+='<span class="flag" style="color:var(--red)"><span style="width:5px;height:5px;border-radius:50%;background:var(--red);display:inline-block"></span>'+r.denialReason+'</span>';
+  if(dd!==null&&dd>0)flags+='<span class="flag" style="color:var(--amb)"><span style="width:5px;height:5px;border-radius:50%;background:var(--amb);display:inline-block"></span>'+dd+'d denied</span>';
+  if(s==='Denied'&&dl.p2pDue)flags+='<span class="flag" style="color:var(--amb)"><span style="width:5px;height:5px;border-radius:50%;background:var(--amb);display:inline-block"></span>P2P due '+fd(dl.p2pDue)+'</span>';
+  if(s==='Appeal'&&dl.appealDue)flags+='<span class="flag" style="color:var(--amb)"><span style="width:5px;height:5px;border-radius:50%;background:var(--amb);display:inline-block"></span>Appeal due '+fd(dl.appealDue)+'</span>';
+  const eid='ex-'+r.id.replace(/[^a-z0-9]/gi,'_');
+  const exBtn=hasD?'<button onclick="event.stopPropagation();var e=document.getElementById(\''+eid+'\');e.classList.toggle(\'open\')" style="font-size:11px;padding:2px 8px;border:1px solid var(--line);border-radius:5px;background:var(--paper);cursor:pointer;font-family:inherit;color:var(--sub);margin-right:6px">&#9660;</button>':'';
+  const avCls=r.avoidable==='Avoidable'?'bad':r.avoidable==='Not Avoidable'?'ok':'';
+  const outCls=r.appealOutcome?.startsWith('Overturned')?'ok':r.appealOutcome==='Upheld'?'bad':'';
+  const exSection=hasD?'<div class="dex" id="'+eid+'"><div class="dexg"><div><label>Denial Reason</label><div class="dv bad">'+(r.denialReason||'—')+'</div></div><div><label>Subcategory</label><div class="dv">'+(r.denialSub||'—')+'</div></div><div><label>Avoidable?</label><div class="dv '+avCls+'">'+(r.avoidable||'—')+'</div></div><div><label>Days Denied</label><div class="dv bad">'+(dd!==null?dd+'d':'—')+'</div></div><div><label>Appeal Filed</label><div class="dv">'+(r.appealFiled||'—')+'</div></div><div><label>Appeal Outcome</label><div class="dv '+outCls+'">'+(r.appealOutcome||'Pending')+'</div></div></div></div>':'';
+  return '<button class="epc" onclick="openRec(\''+r.id+'\')" style="border:1px solid var(--line)">'
+    +'<div style="background:'+u.col+'"></div>'
+    +'<div class="epb"><div class="epr1"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="epmrn">MRN '+(r.mri||r.mrn||'—')+'</span><span class="'+lvCls+'">ASAM '+lv+'</span><span class="epfac">'+fac+'</span></div>'
+    +'<div style="display:flex;align-items:center">'+exBtn+'<span class="dp '+u.cls+'">'+u.lbl+'</span></div></div>'
+    +'<div class="epr2"><span class="sp '+sc(s)+'">'+s+'</span><span><b>'+py+'</b> · '+(r.insProduct||r.insType||r.payment_method||'')+'</span><span style="font-family:\'IBM Plex Mono\',monospace">Auth '+(r.authCode||'—')+'</span><span>Covered thru <b style="font-family:\'IBM Plex Mono\',monospace">'+fd(r.authEnd)+'</b></span><span style="margin-left:auto">'+(r.owner||r.coordinator||'—')+'</span></div>'
+    +(flags?'<div class="epr3">'+flags+'</div>':'')
+    +'</div></button>'+exSection;
+}
+function rWL(c,recs){c.innerHTML=recs.length?recs.map(epCard).join(''):'<div class="empty">No episodes match these filters.</div>';}
+function rTK(c,recs){
+  const all=recs.flatMap(r=>atasks(r).concat((r.tasks||[]).map(t=>({...t,rid:r.id,mrn:r.mri,py:np(r.payer),lv:nl(r.loc)}))));
+  let tasks=hideDone?all.filter(t=>!iD(t)):all;
+  tasks.sort((a,b)=>{if(iD(a)&&!iD(b))return 1;if(!iD(a)&&iD(b))return-1;const da=du(a.due),db=du(b.due);if(da===null)return 1;if(db===null)return-1;return da-db;});
+  if(!tasks.length){c.innerHTML='<div class="empty">No tasks. Toggle "Show completed" to see finished work.</div>';return;}
+  c.innerHTML=tasks.map(t=>{
+    const dn=iD(t);const r=R.find(x=>x.id===t.rid)||{};const cad=gc(r);
+    const u=dn?{col:'#7A857F',lbl:'Done',cls:'dp-gy'}:urg(t.due,cad.remindAhead);
+    const lv=t.lv||nl(r.loc),py=t.py||np(r.payer),fac=r.fac||r.facility||r.service_facility||'';
+    const lvCls=lv==='3.5'?'lv35':'lv31';
+    return '<div class="tkc" style="border:1px solid var(--line)">'
+      +'<div style="background:'+(dn?'#7A857F':u.col)+'"></div>'
+      +'<div class="tkcb" onclick="togD(\''+t.id+'\','+!!(t.seedDone||false)+')" style="padding:0 12px">'
+        +'<div class="tkcbox'+(dn?' ck':'')+'">'+( dn?'<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+'</div>'
+      +'</div>'
+      +'<div class="tktxt" onclick="openRec(\''+t.rid+'\')"><div class="tkt1"><span class="tkti'+(dn?' done':'')+'">'+( t.desc||t.activity||'Task')+'</span>'+(dn?'<span class="dp dp-gy">Done</span>':'<span class="dp '+u.cls+'">'+u.lbl+'</span>')+'</div>'
+        +'<div class="tkt2"><span style="font-family:\'IBM Plex Mono\',monospace">MRN '+t.mrn+'</span><span class="'+lvCls+'">ASAM '+lv+'</span><span><b>'+py+'</b> · '+fac+'</span><span style="font-family:\'IBM Plex Mono\',monospace">Due '+fd(t.due)+'</span><span style="margin-left:auto">'+(t.owner||r.owner||'—')+'</span></div>'
+      +'</div></div>';
+  }).join('');
+}
+function rDN(c,recs){
+  const dn=recs.filter(r=>r.decision==='Denied'||r.decision==='Partial');
+  const rm={};dn.forEach(r=>{const k=r.denialReason||'Unknown';rm[k]=(rm[k]||0)+1;});
+  const rs=Object.entries(rm).sort((a,b)=>b[1]-a[1]),mx=rs[0]?.[1]||1;
+  const mm={};dn.forEach(r=>{const k=np(r.payer);mm[k]=(mm[k]||0)+1;});
+  const ms=Object.entries(mm).sort((a,b)=>b[1]-a[1]),mxm=ms[0]?.[1]||1;
+  c.innerHTML='<div class="panel"><div class="ptitle">Denials by reason</div><div class="psub">Trailing 90 days · feeds the denial taxonomy</div>'
+    +(rs.length?rs.map(([r,n])=>'<div class="barrow"><div class="barlr"><span class="bl">'+r+'</span><span class="bv">'+n+'</span></div><div class="batr"><div class="bafl" style="width:'+Math.round(n/mx*100)+'%;background:var(--p)"></div></div></div>').join(''):'<div style="color:var(--sub)">No denials in this period.</div>')
+    +'</div><div class="panel"><div class="ptitle">Denial volume by MCE</div><div class="psub">Where to focus payer escalation</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:16px;height:130px;padding-top:8px">'
+    +ms.map(([m,n])=>'<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><span style="font-family:\'IBM Plex Mono\',monospace;font-weight:700;font-size:14px;margin-bottom:5px">'+n+'</span><div style="width:100%;max-width:70px;height:'+Math.round(n/mxm*100)+'%;background:var(--ink);border-radius:7px 7px 0 0"></div><span style="font-size:12.5px;color:var(--sub);margin-top:6px;font-weight:600">'+m+'</span></div>').join('')
+    +'</div></div>'
+    +(dn.length?'<div style="font-size:13px;font-weight:700;margin-bottom:10px">Denied Records ('+dn.length+')</div>'+dn.map(epCard).join(''):'');
+}
+function rAP(c,recs){
+  const ap=recs.filter(r=>(r.appealFiled&&r.appealFiled.startsWith('Filed'))||r.decision==='Denied');
+  if(!ap.length){c.innerHTML='<div class="empty">No open appeals or denied records requiring action.</div>';return;}
+  const pend=ap.filter(r=>!r.appealOutcome||r.appealOutcome==='');
+  const res=ap.filter(r=>r.appealOutcome&&r.appealOutcome!=='');
+  const ot=res.filter(r=>r.appealOutcome?.startsWith('Overturned')).length;
+  const otp=res.length?Math.round(ot/res.length*100):0;
+  let h='<div class="panel" style="margin-bottom:14px"><div style="display:flex;gap:16px;flex-wrap:wrap">'
+    +'<div><div style="font-family:\'IBM Plex Mono\',monospace;font-size:22px;font-weight:700;color:var(--amb)">'+pend.length+'</div><div style="font-size:11px;font-weight:600;color:var(--sub)">Active</div></div>'
+    +'<div><div style="font-family:\'IBM Plex Mono\',monospace;font-size:22px;font-weight:700;color:var(--grn)">'+ot+'</div><div style="font-size:11px;font-weight:600;color:var(--sub)">Overturned</div></div>'
+    +'<div><div style="font-family:\'IBM Plex Mono\',monospace;font-size:22px;font-weight:700;color:var(--p)">'+otp+'%</div><div style="font-size:11px;font-weight:600;color:var(--sub)">Overturn rate</div></div>'
+    +'</div></div>';
+  if(pend.length)h+='<div style="font-size:13px;font-weight:700;margin-bottom:10px">Active Appeals & Denials ('+pend.length+')</div>'+pend.map(epCard).join('');
+  if(res.length)h+='<div style="font-size:13px;font-weight:700;margin:18px 0 10px">Resolved ('+res.length+')</div>'+res.map(epCard).join('');
+  c.innerHTML=h;
+}
+function rRP(c,recs){
+  const pm={};recs.forEach(r=>{const k=np(r.payer);if(!pm[k])pm[k]={req:0,ap:0};pm[k].req+=(r.daysReq||0);pm[k].ap+=(r.daysAuth||0);});
+  const ps=Object.entries(pm).filter(([,v])=>v.req>0).sort((a,b)=>(b[1].ap/b[1].req)-(a[1].ap/a[1].req));
+  const active=recs.filter(r=>es(r)!=='Discharged');
+  const lv35=active.filter(r=>nl(r.loc)==='3.5').length,lv31=active.filter(r=>nl(r.loc)==='3.1').length;
+  const disc=recs.filter(r=>es(r)==='Discharged').length;
+  const om={};R.forEach(r=>{if(es(r)!=='Discharged'){const o=r.owner||'Unassigned';if(!om[o])om[o]={t:0,ov:0};om[o].t++;}});
+  R.forEach(r=>{const dl=ddl(r);const pd=pdl(r,dl);const d=du(pd);if(d!==null&&d<0){const o=r.owner||'Unassigned';if(om[o])om[o].ov++;}});
+  const ows=Object.entries(om).sort((a,b)=>b[1].t-a[1].t),mxo=ows[0]?.[1].t||1;
+  const sm={};R.filter(r=>es(r)!=='Discharged').forEach(r=>{const s=es(r);sm[s]=(sm[s]||0)+1;});
+  const ss=Object.entries(sm).sort((a,b)=>b[1]-a[1]),tot=active.length||1;
+  const scols={'Authorized':'#1F8A57','Pending Initial':'#C97A14','Concurrent Pending':'#C97A14','Denied':'#C0392B','Appeal':'#C0392B'};
+  c.innerHTML='<div class="panel"><div class="ptitle">Approved vs requested days</div><div class="psub">UR leading indicator — approval yield by MCE</div>'
+    +(ps.map(([p,v])=>{const pct=Math.round(v.ap/v.req*100),col=pct>=90?'#1F8A57':pct>=85?'#C97A14':'#C0392B';return'<div class="barrow"><div class="barlr"><span class="bl">'+p+'</span><span class="bv" style="color:'+col+'">'+pct+'% <span style="color:var(--sub);font-weight:400">· '+v.ap+'/'+v.req+' days</span></span></div><div class="batr" style="height:11px"><div class="bafl" style="height:11px;width:'+pct+'%;background:'+col+'"></div></div></div>';}).join('')||'<div style="color:var(--sub)">Fill in Days Requested and Days Authorized in records to see this chart.</div>')
+    +'</div><div class="panel"><div class="ptitle">Open episodes by level</div><div class="psub">Current census in review</div><div class="tiles">'
+    +'<div class="tile"><div class="tilenum" style="color:var(--p)">'+lv35+'</div><div class="tilelbl">ASAM 3.5</div></div>'
+    +'<div class="tile"><div class="tilenum" style="color:var(--gld)">'+lv31+'</div><div class="tilelbl">ASAM 3.1</div></div>'
+    +'<div class="tile"><div class="tilenum" style="color:var(--gry)">'+disc+'</div><div class="tilelbl">Discharged</div></div>'
+    +'</div></div><div class="panel"><div class="ptitle">Workload by coordinator</div><div class="psub">Active records per owner — red = overdue</div>'
+    +ows.map(([o,v])=>{const w=Math.round(v.t/mxo*100);return'<div class="barrow"><div class="barlr"><span class="bl">'+o+'</span><span class="bv">'+v.t+(v.ov>0?' <span style="color:var(--red);font-size:11px">('+v.ov+' overdue)</span>':'')+'</span></div><div class="batr"><div style="height:9px;border-radius:6px;overflow:hidden;display:flex"><div style="width:'+Math.round((v.t-v.ov)/v.t*100*w/100)+'%;background:var(--p)"></div><div style="width:'+Math.round(v.ov/v.t*100*w/100)+'%;background:var(--red)"></div></div></div></div>';}).join('')
+    +'</div><div class="panel"><div class="ptitle">Authorization pipeline</div><div class="psub">Active records by current stage</div>'
+    +ss.map(([s,n])=>{const col=scols[s]||'#7A857F',pct=Math.round(n/tot*100);return'<div class="barrow"><div class="barlr"><span class="bl">'+s+'</span><span class="bv" style="font-family:\'IBM Plex Mono\',monospace">'+n+' <span style="color:var(--sub);font-size:11px">'+pct+'%</span></span></div><div class="batr"><div class="bafl" style="width:'+pct+'%;background:'+col+'"></div></div></div>';}).join('')
+    +'</div>';
+}
+function rCD(c){
+  const lvs=['3.5','3.1'],mces=['Anthem','CareSource','MHS','MDwise'];
+  const cols=[['interval','Span'],['submitBuffer','Submit buffer'],['remindAhead','Remind ahead'],['p2p','P2P window'],['appeal','Appeal window'],['initialSLA','Initial SLA']];
+  let h='<div class="cadwarn"><b>Illustrative values.</b> Confirm every interval against each MCE\'s UM / provider manual before go-live. Editing a value here re-derives all due dates, urgency bands, and tasks across the app — try it, then check the Worklist.</div>';
+  lvs.forEach(lv=>{
+    h+='<div class="panel cadsec"><h3>ASAM '+lv+'</h3><div class="sub">Days. Submit buffer = days before coverage lapses; remind ahead = when a task turns amber.</div><div style="overflow-x:auto"><table class="cadtbl"><thead><tr><th style="text-align:left">MCE</th>'+cols.map(([k,l])=>'<th>'+l+'</th>').join('')+'</tr></thead><tbody>';
+    mces.forEach(m=>{
+      const row=(CAD[lv]||{})[m]||(DC[lv]||{})[m]||DC['3.1']['Default'];
+      h+='<tr><td class="cadmce">'+m+'</td>'+cols.map(([k])=>'<td style="text-align:center;padding:5px 6px"><input type="number" min="0" class="cadinp" value="'+(row[k]||0)+'" onchange="updCad(\''+lv+'\',\''+m+'\',\''+k+'\',this.value)"></td>').join('')+'</tr>';
+    });
+    h+='</tbody></table></div></div>';
+  });
+  c.innerHTML=h;
+}
+function updCad(lv,mce,key,val){
+  if(!CAD[lv])CAD[lv]={};
+  if(!CAD[lv][mce])CAD[lv][mce]={...(DC[lv]||{})[mce]||DC['3.1']['Default']};
+  CAD[lv][mce][key]=Math.max(0,parseInt(val)||0);
+  saveC(CAD);updStats();
+}
+function openRec(id){window.location.href='index.html?record='+encodeURIComponent(id);}
+// ── INIT ──────────────────────────────────────────────────────────────────
+R=loadR();CAD=loadC();
+go('worklist');
+</script>
+</body>
+</html>
