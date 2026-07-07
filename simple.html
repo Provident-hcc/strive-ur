@@ -126,103 +126,9 @@ body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:var(--paper);c
 .xb{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:var(--surf);color:var(--sub);transition:all .12s;font-family:inherit}
 .xb:hover{border-color:var(--p);color:var(--p)}
 .empty{text-align:center;padding:40px;color:var(--sub);border:1px dashed var(--line);border-radius:12px;font-size:13px}
-/* AUTH */
-#login-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1B3A6B 0%,#2a5298 50%,#1e6fa8 100%);display:flex;align-items:center;justify-content:center;font-family:'Hanken Grotesk',system-ui,sans-serif}
-#login-screen.hidden{display:none!important}
-.login-card{background:#fff;border-radius:18px;padding:44px 40px 36px;width:420px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.28);text-align:center}
-.login-logo{font-size:26px;font-weight:900;letter-spacing:.18em;color:#1B3A6B;margin-bottom:5px}
-.login-sub{font-size:12px;color:#64748b;margin-bottom:28px;letter-spacing:.02em}
-.login-title{font-size:17px;font-weight:800;color:#1a202c;margin-bottom:8px}
-.login-desc{font-size:13px;color:#64748b;margin-bottom:26px;line-height:1.55}
-.login-ms-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 18px;border:1.5px solid #e2e8f0;border-radius:9px;background:#fff;font-size:14px;font-weight:600;color:#1a202c;cursor:pointer;transition:all .15s;font-family:inherit}
-.login-ms-btn:hover{border-color:#4BBDE8;box-shadow:0 4px 16px rgba(75,189,232,.18);background:#f8faff}
-.login-ms-btn:active{transform:scale(.98)}
-.ms-logo{width:20px;height:20px;flex-shrink:0}
-.login-footer{margin-top:20px;font-size:11px;color:#94a3b8}
-.login-error{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;margin-bottom:16px;display:none}
-.login-spinner{display:none;justify-content:center;margin-bottom:16px}
-.login-spinner span{width:8px;height:8px;border-radius:50%;background:#4BBDE8;display:inline-block;margin:0 3px;animation:ls .8s infinite alternate}
-.login-spinner span:nth-child(2){animation-delay:.2s}.login-spinner span:nth-child(3){animation-delay:.4s}
-@keyframes ls{0%{opacity:.25;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body>
-
-<!-- ── LOGIN SCREEN ── -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">STRIVE</div>
-    <div class="login-sub">ReviewDesk · UR Worklist</div>
-    <div class="login-title">Sign in to continue</div>
-    <p class="login-desc">Use your work Microsoft 365 account<br>(the same one you sign in to Outlook with).</p>
-    <div class="login-error" id="login-error"></div>
-    <div class="login-spinner" id="login-spinner"><span></span><span></span><span></span></div>
-    <button class="login-ms-btn" id="login-btn" onclick="loginWithMicrosoft()">
-      <svg class="ms-logo" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
-        <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
-        <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
-        <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
-      </svg>
-      Sign in with Microsoft
-    </button>
-    <div class="login-footer">Provident Healthcare &middot; access restricted to org members</div>
-  </div>
-</div>
-
-<!-- ── MSAL ── -->
-<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"></script>
-<script>if(!window.msal){document.write('<script src="https://unpkg.com/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"><\/script>');}</script>
-<script src="config.js"></script>
-<script>
-(function(){
-const ALLOWED_DOMAINS=['striverecovery.com','providenthcc.com','gshealthcarellc.com'];
-const AUTH_SESSION_KEY='strive_rd_user';
-const SCOPES=['openid','profile','email','User.Read'];
-const _clientId=(typeof AZURE_CONFIG!=='undefined'&&AZURE_CONFIG.CLIENT_ID!=='YOUR_CLIENT_ID_HERE')?AZURE_CONFIG.CLIENT_ID:'';
-const _tenantId=(typeof AZURE_CONFIG!=='undefined'&&AZURE_CONFIG.TENANT_ID!=='YOUR_TENANT_ID_HERE')?AZURE_CONFIG.TENANT_ID:'common';
-const msalCfg={auth:{clientId:_clientId||'debd63be-2397-4d6e-adb1-381574e7352b',authority:'https://login.microsoftonline.com/'+(_tenantId!=='common'?_tenantId:'063ab74f-56d1-429a-b96d-a24a572025de'),redirectUri:window.location.origin+window.location.pathname},cache:{cacheLocation:'localStorage'}};
-let _inst=null;
-async function getInst(){if(_inst)return _inst;_inst=new msal.PublicClientApplication(msalCfg);if(typeof _inst.initialize==='function')await _inst.initialize();return _inst;}
-window.loginWithMicrosoft=async function(){
-  showSpinner(true);
-  try{const inst=await getInst();let resp;try{resp=await inst.ssoSilent({scopes:SCOPES});}catch(e){resp=await inst.loginPopup({scopes:SCOPES});}
-  const email=(resp.account.username||'').toLowerCase();handleAuthResult(email,resp.account.name||email);}
-  catch(err){showSpinner(false);if(err&&err.errorCode!=='user_cancelled')showLoginError('Sign-in failed: '+(err.message||err.errorCode||'unknown error'));console.error('[MSAL]',err);}
-};
-function handleAuthResult(email,name){
-  const domain=(email.split('@')[1]||'').toLowerCase();
-  if(!ALLOWED_DOMAINS.includes(domain)){showSpinner(false);showLoginError('Access denied. Only striverecovery.com, providenthcc.com, and gshealthcarellc.com accounts are allowed.');return;}
-  sessionStorage.setItem(AUTH_SESSION_KEY,JSON.stringify({email,name,ts:Date.now()}));
-  mountApp(email,name);
-}
-window.mountApp=function(email,name){
-  document.getElementById('login-screen').classList.add('hidden');
-  // Pre-select coordinator by first name
-  const sel=document.getElementById('usel');
-  if(sel){const fn=(name||'').split(' ')[0].toLowerCase();for(let i=0;i<sel.options.length;i++){if(sel.options[i].text.toLowerCase().includes(fn)){sel.selectedIndex=i;break;}}}
-  // Show sign-out in sidebar footer
-  const sf=document.getElementById('sf-user');
-  if(sf){sf.textContent=(name||email)+' · ';const so=document.createElement('a');so.href='#';so.textContent='Sign out';so.onclick=function(e){e.preventDefault();window.signOut();};sf.appendChild(so);}
-  if(typeof go==='function')go('worklist');
-};
-window.signOut=async function(){
-  sessionStorage.removeItem(AUTH_SESSION_KEY);
-  document.getElementById('login-screen').classList.remove('hidden');
-  try{const inst=await getInst();await inst.logoutPopup();}catch(e){}
-};
-window.showLoginError=function(msg){const el=document.getElementById('login-error');if(el){el.textContent=msg;el.style.display='block';}};
-function showSpinner(on){const sp=document.getElementById('login-spinner');const bt=document.getElementById('login-btn');if(sp)sp.style.display=on?'flex':'none';if(bt)bt.style.display=on?'none':'flex';}
-window.addEventListener('DOMContentLoaded',async function(){
-  const saved=sessionStorage.getItem(AUTH_SESSION_KEY);
-  if(saved){try{const u=JSON.parse(saved);if(u&&u.email&&(Date.now()-u.ts)<12*60*60*1000){mountApp(u.email,u.name||u.email);return;}}catch(e){}}
-  sessionStorage.removeItem(AUTH_SESSION_KEY);
-  try{const inst=await getInst();const resp=await inst.handleRedirectPromise();if(resp&&resp.account)handleAuthResult((resp.account.username||'').toLowerCase(),resp.account.name||resp.account.username);}
-  catch(e){console.warn('[MSAL redirect]',e);}
-});
-})();
-</script>
-
 <div class="app">
 <aside class="sb">
   <div class="sb-logo">
@@ -252,8 +158,12 @@ window.addEventListener('DOMContentLoaded',async function(){
       <option>Dusty Dawkins</option><option>Heather Reynolds</option>
       <option>UR Director</option>
     </select>
-    <div id="sf-user" style="margin-bottom:5px;font-size:11px;color:#8FA39C"></div>
-    <div><a href="index.html">&#8594; Switch to Full App</a></div>
+    <div style="margin-bottom:8px">
+      <a href="index.html" style="display:flex;align-items:center;gap:7px;background:rgba(15,110,100,.2);color:#6FBFB8;text-decoration:none;font-weight:700;font-size:12px;padding:7px 10px;border-radius:8px;border:1px solid rgba(15,110,100,.35)">
+        <span style="font-size:14px">&#8592;</span> Full App (UR Tracker)
+      </a>
+    </div>
+    <div><a href="index.html" style="display:none"></a></div>
   </div>
 </aside>
 <div class="main">
