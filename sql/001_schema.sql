@@ -3,7 +3,7 @@
 -- ============================================================
 
 -- Primary entity: one row per authorization period
-CREATE TABLE records (
+CREATE TABLE dbo.records (
     id              NVARCHAR(50)  PRIMARY KEY,
     mri             NVARCHAR(20)  NOT NULL,
     last_name       NVARCHAR(100),
@@ -49,9 +49,9 @@ CREATE TABLE records (
 );
 
 -- Tasks: child of records
-CREATE TABLE tasks (
+CREATE TABLE dbo.tasks (
     id              NVARCHAR(50) PRIMARY KEY,
-    record_id       NVARCHAR(50) NOT NULL REFERENCES records(id) ON DELETE CASCADE,
+    record_id       NVARCHAR(50) NOT NULL REFERENCES dbo.records(id) ON DELETE CASCADE,
     description     NVARCHAR(500),
     owner           NVARCHAR(200),
     due_date        DATE,
@@ -63,9 +63,9 @@ CREATE TABLE tasks (
 );
 
 -- Audit log: child of records
-CREATE TABLE audit_log (
+CREATE TABLE dbo.audit_log (
     id              INT IDENTITY(1,1) PRIMARY KEY,
-    record_id       NVARCHAR(50) NOT NULL REFERENCES records(id) ON DELETE CASCADE,
+    record_id       NVARCHAR(50) NOT NULL REFERENCES dbo.records(id) ON DELETE CASCADE,
     ts              DATETIME2 NOT NULL,
     user_name       NVARCHAR(200),
     action          NVARCHAR(50),
@@ -75,7 +75,7 @@ CREATE TABLE audit_log (
 );
 
 -- Cadence config for strive_cadence_v1 (keyed by LOC like 'Res 3.5', 'Res 3.1')
-CREATE TABLE cadence_config (
+CREATE TABLE dbo.cadence_config (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     loc             NVARCHAR(50) NOT NULL,
     payer           NVARCHAR(200) NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE cadence_config (
 );
 
 -- SLA cadence config for strive_sla_cadence_v1 (keyed by LOC like '3.5', '3.1')
-CREATE TABLE sla_cadence_config (
+CREATE TABLE dbo.sla_cadence_config (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     loc             NVARCHAR(50) NOT NULL,
     payer           NVARCHAR(200) NOT NULL,
@@ -103,14 +103,14 @@ CREATE TABLE sla_cadence_config (
 );
 
 -- Coordinators
-CREATE TABLE coordinators (
+CREATE TABLE dbo.coordinators (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     name            NVARCHAR(200) NOT NULL UNIQUE,
     sort_order      INT DEFAULT 0
 );
 
 -- KPI manual entries
-CREATE TABLE kpi_manual (
+CREATE TABLE dbo.kpi_manual (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     kpi_id          NVARCHAR(50) NOT NULL,
     month           NVARCHAR(20) NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE kpi_manual (
 );
 
 -- Reference registry (payers, LOCs, etc.)
-CREATE TABLE reference_registry (
+CREATE TABLE dbo.reference_registry (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     kind            NVARCHAR(20) NOT NULL,
     name            NVARCHAR(200) NOT NULL,
@@ -129,21 +129,21 @@ CREATE TABLE reference_registry (
 );
 
 -- Auto-done tracking
-CREATE TABLE auto_done (
+CREATE TABLE dbo.auto_done (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     task_key        NVARCHAR(200) NOT NULL UNIQUE,
     completed_at    NVARCHAR(50)
 );
 
 -- Census snapshots
-CREATE TABLE census_snapshot (
+CREATE TABLE dbo.census_snapshot (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     snapshot_at     DATETIME2 DEFAULT SYSUTCDATETIME(),
     mris            NVARCHAR(MAX)
 );
 
 -- Import log
-CREATE TABLE import_log (
+CREATE TABLE dbo.import_log (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     file_name       NVARCHAR(500),
     imported_at     DATETIME2 DEFAULT SYSUTCDATETIME(),
@@ -155,7 +155,7 @@ CREATE TABLE import_log (
 );
 
 -- App setup / configuration
-CREATE TABLE app_setup (
+CREATE TABLE dbo.app_setup (
     id              INT IDENTITY(1,1) PRIMARY KEY,
     setting_key     NVARCHAR(50) NOT NULL UNIQUE,
     setting_value   NVARCHAR(200)
