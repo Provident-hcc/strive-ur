@@ -1,0 +1,18 @@
+{
+  "name": "strive-ur-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for Strive UR Intelligence Tracker",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "@azure/identity": "^4.0.0",
+    "mssql": "^11.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

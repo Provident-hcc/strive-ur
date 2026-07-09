@@ -187,9 +187,10 @@ body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:var(--paper);c
 </div>
 <script>
 const DK='strive_ur_v6',CK='strive_cadence_v1';
-function loadR(){try{return JSON.parse(localStorage.getItem(DK))||[];}catch(e){return[];}}
-function loadC(){try{return JSON.parse(localStorage.getItem(CK))||DC;}catch(e){return DC;}}
-function saveC(c){localStorage.setItem(CK,JSON.stringify(c));}
+const _sApi=async(p,o)=>{const r=await fetch('/api/'+p,Object.assign({headers:{'Content-Type':'application/json'}},o));if(!r.ok)throw new Error(r.status);return r.status===204?null:r.json();};
+async function loadR(){try{const d=await _sApi('records');localStorage.setItem(DK,JSON.stringify(d));return d;}catch(e){try{return JSON.parse(localStorage.getItem(DK))||[];}catch(_){return[];}}}
+async function loadC(){try{const d=await _sApi('cadence');localStorage.setItem(CK,JSON.stringify(d));return d;}catch(e){try{return JSON.parse(localStorage.getItem(CK))||DC;}catch(_){return DC;}}}
+function saveC(c){localStorage.setItem(CK,JSON.stringify(c));_sApi('cadence',{method:'PUT',body:JSON.stringify(c)}).catch(e=>console.warn('[DAL] saveCadence:',e.message));}
 const DC={
   '3.5':{
     'Anthem':{interval:7,submitBuffer:1,remindAhead:2,p2p:1,appeal:30,initialSLA:1},
@@ -442,8 +443,7 @@ function updCad(lv,mce,key,val){
 }
 function openRec(id){window.location.href='index.html?record='+encodeURIComponent(id);}
 // ── INIT ──────────────────────────────────────────────────────────────────
-R=loadR();CAD=loadC();
-go('worklist');
+(async function(){R=await loadR();CAD=await loadC();go('worklist');})();
 </script>
 </body>
 </html>

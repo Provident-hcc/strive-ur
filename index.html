@@ -359,7 +359,7 @@ input.fme:focus,select.fme:focus,textarea.fme:focus{border-color:#f97316!importa
       <button class="sch red" onclick="setupClear()"><div class="sci" style="background:var(--red-bg)">&#128465;</div><div class="sct"><strong>Clear demo data &amp; start fresh</strong><span>Wipes all sample records. Import from Sunwave to populate.</span></div></button>
       <button class="sch" onclick="setupKeep()"><div class="sci" style="background:#f0f9ff">&#128269;</div><div class="sct"><strong>Keep demo data &amp; explore first</strong><span>Browse with sample records. Clear before going live.</span></div></button>
     </div>
-    <div style="padding:0 24px 18px;text-align:center"><p style="font-size:10px;color:var(--muted)">Data stored in browser localStorage. This screen appears once per device.</p></div>
+    <div style="padding:0 24px 18px;text-align:center"><p style="font-size:10px;color:var(--muted)">Data synced to Azure SQL with local cache. This screen appears once per device.</p></div>
   </div>
 </div>
 
@@ -607,18 +607,80 @@ const KANBAN_COLS=[
 const PRIORITY_ORDER={urgent:0,high:1,normal:2,low:3,'':4};
 
 function uid(){return Date.now()+Math.random().toString(36).slice(2,6);}
-function load(){
-  try{const d=localStorage.getItem(KEY);R=d?JSON.parse(d):seed();}
-  catch(e){R=seed();}
-  // Migrate old stage keys to v1.1 stage names
+
+// ── DAL — Data Access Layer (API-first, localStorage fallback) ──────────
+const DAL = {
+  async _api(path, opts) {
+    const res = await fetch('/api/' + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
+    if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+    if (res.status === 204) return null;
+    return res.json();
+  },
+  async loadRecords() {
+    try {
+      const data = await this._api('records');
+      localStorage.setItem(KEY, JSON.stringify(data));
+      return data;
+    } catch (e) {
+      console.warn('[DAL] API load failed, using localStorage:', e.message);
+      try { const d = localStorage.getItem(KEY); return d ? JSON.parse(d) : null; } catch (_) { return null; }
+    }
+  },
+  async saveRecord(record) {
+    try { await this._api('records/' + record.id, { method: 'PUT', body: JSON.stringify(record) }); } catch (e) { console.warn('[DAL] saveRecord failed:', e.message); }
+  },
+  async createRecord(record) {
+    try { await this._api('records', { method: 'POST', body: JSON.stringify(record) }); } catch (e) { console.warn('[DAL] createRecord failed:', e.message); }
+  },
+  async deleteRecord(id) {
+    try { await this._api('records/' + id, { method: 'DELETE' }); } catch (e) { console.warn('[DAL] deleteRecord failed:', e.message); }
+  },
+  async bulkUpsert(records, importLog, census) {
+    try { await this._api('records/bulk', { method: 'POST', body: JSON.stringify({ records, importLog, census }) }); } catch (e) { console.warn('[DAL] bulkUpsert failed:', e.message); }
+  },
+  async clearAll() {
+    try { await this._api('records?confirm=true', { method: 'DELETE' }); } catch (e) { console.warn('[DAL] clearAll failed:', e.message); }
+  },
+  async loadConfig(endpoint, lsKey, fallback) {
+    try {
+      const data = await this._api(endpoint);
+      localStorage.setItem(lsKey, JSON.stringify(data));
+      return data;
+    } catch (e) {
+      try { const d = JSON.parse(localStorage.getItem(lsKey)); if (d) return d; } catch (_) {}
+      return typeof fallback === 'function' ? fallback() : fallback || {};
+    }
+  },
+  async saveConfig(endpoint, data, lsKey) {
+    if (lsKey) localStorage.setItem(lsKey, JSON.stringify(data));
+    try { await this._api(endpoint, { method: 'PUT', body: JSON.stringify(data) }); } catch (e) { console.warn('[DAL] saveConfig(' + endpoint + ') failed:', e.message); }
+  },
+  async postCensus(data) {
+    try { await this._api('census', { method: 'POST', body: JSON.stringify(data) }); } catch (e) { console.warn('[DAL] postCensus failed:', e.message); }
+  },
+  async getAuthUser() {
+    try {
+      const res = await fetch('/.auth/me');
+      const data = await res.json();
+      const p = data.clientPrincipal;
+      return p ? (p.userDetails || p.userId || '') : '';
+    } catch (e) { return ''; }
+  }
+};
+
+function fixupRecords() {
   R.forEach(function(r){r.stage=migrateStage(r.stage);});
-  // Set discharge detection from stage
   R.forEach(function(r){
     if(!r.stage)r.stage='pre-auth-gathering';
     if(!STAGES[r.stage])r.stage=r.discharge?'discharged-auth-received':'pre-auth-gathering';
     if(!Array.isArray(r.tasks))r.tasks=[];
     if(r.decision==='Approved'&&!r.stage.startsWith('discharged')&&!r.stage.startsWith('authorized')&&!r.stage.startsWith('concurrent'))r.stage='authorized';
   });
+}
+async function load(){
+  const data = await DAL.loadRecords();
+  R = data || seed();
+  fixupRecords();
 }
 function persist(){localStorage.setItem(KEY,JSON.stringify(R));badges();}
 function seed(){
@@ -809,8 +871,6 @@ function currentUser(){return document.getElementById("cu").value||"";}
 // ── UTILITIES ─────────────────────────────────────────────────────────────
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function cu(){return document.getElementById('cu').value||'';}
-function load(){try{const d=localStorage.getItem(KEY);R=d?JSON.parse(d):seed();}catch(e){R=seed();}}
-function persist(){localStorage.setItem(KEY,JSON.stringify(R));badges();}
 
 // ── GLOBAL SEARCH ─────────────────────────────────────────────────────────
 function onSearch(v){
@@ -1578,7 +1638,7 @@ function loadCadenceConfig(){
   try{var v=JSON.parse(localStorage.getItem(SLA_CAD_KEY));if(v&&v['3.5'])return v;}catch(e){}
   return defaultSLAConfig();
 }
-function saveCadenceConfig(c){localStorage.setItem(SLA_CAD_KEY,JSON.stringify(c));}
+function saveCadenceConfig(c){localStorage.setItem(SLA_CAD_KEY,JSON.stringify(c));DAL.saveConfig('sla-cadence',c,SLA_CAD_KEY);}
 
 function slaTabChange(lv,mce,key,val){
   var CAD=loadCadenceConfig();
@@ -1886,7 +1946,7 @@ function rSettings(c){
     +'<button class="btn btn-ghost btn-sm" style="color:var(--orange);border-color:var(--orange)" onclick="delTestRecs()">&#128465; Delete All TEST Records</button></div>'
     +'<div style="border-top:1px solid var(--border);padding-top:14px"><div style="font-weight:700;color:var(--red);margin-bottom:4px;font-size:13px">Clear All Records</div>'
     +'<div style="font-size:12px;color:var(--muted);margin-bottom:9px">Wipe all data from localStorage. Cannot be undone.</div>'
-    +'<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="if(confirm(&quot;Delete ALL records? Cannot be undone.&quot;)){R=[];persist();go(&quot;queue&quot;);}">&#9888; Clear All Data</button></div>'
+    +'<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="if(confirm(&quot;Delete ALL records? Cannot be undone.&quot;)){R=[];persist();DAL.clearAll();go(&quot;queue&quot;);}">&#9888; Clear All Data</button></div>'
     +'</div></div></div>';
 }
 
@@ -1937,13 +1997,15 @@ function closeModal(){document.getElementById('modal').classList.add('hidden');e
 function delRecord(){
   if(!eid)return;var r=R.find(function(x){return x.id===eid||x.id==eid;});if(!r)return;
   if(!confirm('Delete '+r.last+', '+r.first+' \u2014 '+(r.authPeriod||'auth period')+'?'))return;
-  R=R.filter(function(x){return x.id!==eid&&x.id!=eid;});persist();closeModal();go(cv);
+  var delId=eid;R=R.filter(function(x){return x.id!==delId&&x.id!=delId;});persist();DAL.deleteRecord(delId);closeModal();go(cv);
 }
 function delTestRecs(){
   var tc=R.filter(function(r){return r.first&&r.first.startsWith('TEST ');}).length;
   if(!tc){alert('No TEST records found.');return;}
   if(!confirm('Delete all '+tc+' TEST records?'))return;
-  R=R.filter(function(r){return !r.first||!r.first.startsWith('TEST ');});persist();go(cv);
+  var testIds=R.filter(function(r){return r.first&&r.first.startsWith('TEST ');}).map(function(r){return r.id;});
+  R=R.filter(function(r){return !r.first||!r.first.startsWith('TEST ');});persist();
+  testIds.forEach(function(id){DAL.deleteRecord(id);});go(cv);
   alert('TEST records deleted.');
 }
 function fpill(s){filt=s;go(cv);}
@@ -2142,7 +2204,7 @@ function getCoords(){
   R.forEach(r=>{if(r.coordinator&&!inUse.has(r.coordinator)){stored.push(r.coordinator);inUse.add(r.coordinator);}});
   return stored;
 }
-function saveCoords(list){localStorage.setItem(COORD_KEY,JSON.stringify(list));}
+function saveCoords(list){localStorage.setItem(COORD_KEY,JSON.stringify(list));DAL.saveConfig('coordinators',list,COORD_KEY);}
 function populateCoordSelects(){
   const coords=getCoords();
   const fill=(id,extras,firstLabel)=>{
@@ -2172,7 +2234,7 @@ function loadRef(){
   KNOWN_LOCS.forEach(function(l){ref.locs[l]={confirmed:true};});
   return ref;
 }
-function saveRef(r){localStorage.setItem(REF_KEY,JSON.stringify(r));}
+function saveRef(r){localStorage.setItem(REF_KEY,JSON.stringify(r));DAL.saveConfig('reference',r,REF_KEY);}
 function confirmRef(kind,enc){
   var name=decodeURIComponent(enc);
   var ref=loadRef();
@@ -2197,7 +2259,7 @@ function refWatch(payersSeen,locsSeen){
     if(!l)return;
     if(!ref.locs[l]){ref.locs[l]={confirmed:false,addedAt:new Date().toISOString()};newL.push(l);}
   });
-  if(newP.length)localStorage.setItem(CADENCE_STORE,JSON.stringify(cad));
+  if(newP.length)saveCadence(cad);
   if(newP.length||newL.length)saveRef(ref);
   return{newPayers:newP,newLocs:newL};
 }
@@ -2447,10 +2509,14 @@ function executeMasterImport(){
   P.dischargeFlags.forEach(fl=>{fl.rec.discharge=fl.discharge;addTaskIfMissing(fl.rec,'Patient discharged while in denial path — confirm final stage (Discharged - Denied Claim vs resolved)','urgent',today);});
   P.progTasks.forEach(pt=>{addTaskIfMissing(pt.rec,'LOC/program change in Sunwave'+(pt.newProg?' → '+pt.newProg:'')+' — NEW AUTHORIZATION REQUIRED','urgent',pt.chDate||today);});
   P.dxFlags.forEach(fx=>{addTaskIfMissing(fx.rec,'Diagnosis change detected — review impact on denial/appeal narrative','normal',today);});
-  if(P.censusMris.length)try{localStorage.setItem('strive_census_snapshot',JSON.stringify({at:new Date().toISOString(),mris:P.censusMris}));}catch(e){}
+  var censusData=null;
+  if(P.censusMris.length){censusData={snapshotAt:new Date().toISOString(),mris:P.censusMris};try{localStorage.setItem('strive_census_snapshot',JSON.stringify(censusData));}catch(e){}}
   if(P.coords.length)saveCoords(P.coords.concat(['UR Director']).filter((v,i,a)=>a.indexOf(v)===i));
-  try{localStorage.setItem('strive_master_import_log',JSON.stringify({file:P.fname,at:new Date().toISOString(),tabs:P.tabs,new:P.authNew.length+P.admitCreate.length+P.gapCreate.length,updated:updated,gaps:P.gapCreate.length,authSkipped:P.authSkipped}));}catch(e){}
-  persist();populateCoordSelects();masterPlan=null;closeCSV();go('patients');
+  var importLogData={fileName:P.fname,importedAt:new Date().toISOString(),tabs:JSON.stringify(P.tabs),newCount:P.authNew.length+P.admitCreate.length+P.gapCreate.length,updatedCount:updated,gapCount:P.gapCreate.length,authSkipped:P.authSkipped};
+  try{localStorage.setItem('strive_master_import_log',JSON.stringify(importLogData));}catch(e){}
+  persist();
+  DAL.bulkUpsert(R, importLogData, censusData);
+  populateCoordSelects();masterPlan=null;closeCSV();go('patients');
   setTimeout(()=>{
     let msg='MASTER import complete.\n\n';
     msg+=(P.authNew.length+P.admitCreate.length+P.gapCreate.length)+' new records · '+updated+' refreshed (manual UR fields preserved)\n';
@@ -2535,7 +2601,7 @@ function doImport(){
     }
   });
 
-  persist();closeCSV();go('patients');
+  persist();DAL.bulkUpsert(R,{fileName:'csv-import',importedAt:new Date().toISOString(),newCount:added,updatedCount:updated});closeCSV();go('patients');
   setTimeout(()=>{
     let msg = '';
     if(added)   msg += added+' new records added.\n';
@@ -2571,7 +2637,7 @@ function setupClear(){
   localStorage.setItem(SETUP_KEY,'live');
   R=[];
   document.getElementById('setup-overlay').classList.add('hidden');
-  persist();
+  persist();DAL.clearAll();DAL.saveConfig('setup',{mode:'live'});
   go('queue');
   setTimeout(()=>{
     const c=document.getElementById('content');
@@ -2599,6 +2665,7 @@ function setupClear(){
 
 function setupKeep(){
   localStorage.setItem(SETUP_KEY,'demo');
+  DAL.saveConfig('setup',{mode:'demo'});
   document.getElementById('setup-overlay').classList.add('hidden');
   showDemoBanner();
   go('queue');
@@ -2664,7 +2731,7 @@ function showSettings(){
         <div style="padding:20px;font-size:13px;color:var(--muted);line-height:1.8">
           <strong style="color:var(--navy)">UR Intelligence Tracker v2.0</strong><br>
           Strive Recovery of Fort Wayne &nbsp;&middot;&nbsp; Provident Healthcare Consulting<br><br>
-          Data is stored in this browser&apos;s localStorage &mdash; private to this device. For multi-device access, export JSON and re-import, or contact Provident to set up shared cloud storage.<br><br>
+          Data is synced to Azure SQL and cached locally. All authorized users share the same data across devices.<br><br>
           <strong style="color:var(--navy)">GitHub:</strong> provident-hcc.github.io/strive-ur
         </div>
       </div>
@@ -2676,7 +2743,7 @@ function confirmClearAll(){
     if(confirm('FINAL CONFIRMATION: This cannot be undone.')){
       localStorage.removeItem(KEY);
       localStorage.removeItem(SETUP_KEY);
-      R=[];persist();
+      R=[];persist();DAL.clearAll();
       alert('All records cleared. The setup screen will reappear on next load.');
       location.reload();
     }
@@ -3089,8 +3156,11 @@ function saveRecord(){
   }
   obj.auditLog=obj.auditLog.concat(newEntries);
 
+  var isNew=!eid;
   if(eid){var i=R.findIndex(function(x){return x.id===eid||x.id==eid;});if(i>=0)R[i]=obj;}else R.push(obj);
-  persist();closeModal();go(cv);
+  persist();
+  if(isNew) DAL.createRecord(obj); else DAL.saveRecord(obj);
+  closeModal();go(cv);
 }
 
 
@@ -3150,7 +3220,7 @@ var KPI_DEFS = [
 function loadKPIManual(){
   try{return JSON.parse(localStorage.getItem(KPI_STORE))||{};}catch(e){return {};}
 }
-function saveKPIManual(d){localStorage.setItem(KPI_STORE,JSON.stringify(d));}
+function saveKPIManual(d){localStorage.setItem(KPI_STORE,JSON.stringify(d));DAL.saveConfig('kpi',d,KPI_STORE);}
 
 // Get records for a time window (days ago from today)
 function recsForWindow(daysBack){
@@ -3720,7 +3790,7 @@ function defaultCadence(){
   };
 }
 function loadCadence(){try{return JSON.parse(localStorage.getItem(CADENCE_STORE))||defaultCadence();}catch(e){return defaultCadence();}}
-function saveCadence(c){localStorage.setItem(CADENCE_STORE,JSON.stringify(c));}
+function saveCadence(c){localStorage.setItem(CADENCE_STORE,JSON.stringify(c));DAL.saveConfig('cadence',c,CADENCE_STORE);}
 
 function getC(record){
   var cad=loadCadence();
@@ -3776,7 +3846,7 @@ function getUrgency(record){
 
 // Auto-task completion tracking (separate from manual tasks)
 function loadAutoDone(){try{return JSON.parse(localStorage.getItem(AUTO_DONE_STORE))||{};}catch(e){return {};}}
-function saveAutoDone(d){localStorage.setItem(AUTO_DONE_STORE,JSON.stringify(d));}
+function saveAutoDone(d){localStorage.setItem(AUTO_DONE_STORE,JSON.stringify(d));DAL.saveConfig('autodone',d,AUTO_DONE_STORE);}
 function isAutoDone(key){return !!(loadAutoDone()[key]);}
 function markAutoDone(key){var d=loadAutoDone();d[key]=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});saveAutoDone(d);}
 
@@ -3960,7 +4030,16 @@ function updateDenialDeadlines(denialDateVal){
   txt.innerHTML='P2P deadline: <strong>'+dates.p2pDue+'</strong> &nbsp;&bull;&nbsp; Appeal deadline: <strong>'+dates.appealDue+'</strong>';
 }
 
-load();persist();checkFirstLaunch();go('queue');
+(async function init(){
+  await load();
+  persist();
+  checkFirstLaunch();
+  go('queue');
+  // Populate coordinator dropdown with SWA auth user
+  DAL.getAuthUser().then(function(name){
+    if(name){var el=document.getElementById('cu');if(el){var opts=[...el.options];var match=opts.find(o=>o.value===name||o.text===name);if(match)el.value=match.value;}}
+  });
+})();
 </script>
 </body>
 </html>
